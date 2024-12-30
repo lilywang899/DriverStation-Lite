@@ -11,6 +11,10 @@
 #include <socky.h>
 #include <assert.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
+
 #define SPRINTF_S snprintf
 #ifdef _WIN32
 #   ifndef __MINGW32__
@@ -104,6 +108,7 @@ static void server_loop(DS_Socket *ptr)
 static void *create_socket(void *data)
 {
    /* Check arguments */
+   spdlog::info("create_socket  {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
    assert(data);
    DS_Socket *ptr = (DS_Socket *)data;
 

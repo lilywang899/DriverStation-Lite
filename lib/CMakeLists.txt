@@ -16,27 +16,31 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 find_package(SDL3 REQUIRED )
 find_package(spdlog REQUIRED)
 
-set(LIBS
+set(CFILES
      src/protocols/frc_2014.c 
      src/protocols/frc_2015.c 
      src/protocols/frc_2016.c 
-     src/protocols/frc_2020.c 
-     src/client.c 
+     src/protocols/frc_2020.c
      src/config.c 
      src/events.c 
-     src/init.c 
-     src/joysticks.c 
+     src/init.c
      src/protocols.c 
      src/socket.c 
      src/utils.c 
-     src/crc32.c 
-     src/array.c 
-     src/timer.c 
-     src/queue.c 
-     src/string.c
+     src/timer.c
+     src/queue.c
      src/socky.c
 )
 #cmake_print_variables(${LIBWEBSOCKETS_INCLUDE_DIRS})
+
+set(LIBS
+        ${CFILES}
+        src/crc32.c
+        src/array.c
+        src/string.c
+        src/joysticks.c
+        src/client.c
+)
 
 add_library(
          ds
@@ -48,6 +52,8 @@ target_include_directories(
      PRIVATE
      include
      PUBLIC
+        /usr/local/include/SDL3
+
 )
 
 target_link_libraries(
@@ -65,4 +71,4 @@ target_link_directories(
 #target_compile_options(mqtt PRIVATE -Wall -Wextra -pedantic -Werror -Wno-unused-function)
 #target_compile_options(ds PRIVATE -Wall -Wextra -Wno-unused-function)
 target_compile_options(ds PRIVATE  -Wextra -Wno-unused-function)
-
+set_source_files_properties(${CFILES}    PROPERTIES LANGUAGE CXX)

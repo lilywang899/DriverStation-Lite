@@ -7,74 +7,55 @@
 
 #include <LibDS.h>
 #include <curses.h>
-
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <pthread.h>
-
 #include "joystick.h"
 #include "interface.h"
-
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
+using namespace spdlog;
 static int running = 1;
 static void process_events();
-static void *get_user_input();
-
-
-//#include "spdlog/spdlog.h"
-//#include "spdlog/cfg/env.h"
-//#include "spdlog/fmt/ostr.h"
-
-//using namespace spdlog;
-
-
+static void *get_user_input(void *);
 /**
  * Main entry point of the application
  */
 int main()
 {
-//   spdlog::warn("Easy padding in numbers like {:08d}", 12);
-//   spdlog::info("Welcome to spdlog version {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
-
    /* Initialize the DS (and its event loop) */
-   DS_Init(); //from LibDS.h calls function in init.c
-
+   spdlog::warn("Easy padding in numbers like {:08d}", 12);
+   spdlog::info("Welcome to spdlog version {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
+   DS_Init();
    /* Connect to the FRC simulator (or OpenRIO Sim) */
    DS_SetCustomRobotAddress("127.0.0.1");
-
    /* Initialize the application modules */
-   // NOTE: disable joy stick for compilation error 
    init_joysticks();
    init_interface();
-
    /* Get user input from a different thread */
    pthread_t user_input_thread;
    pthread_create(&user_input_thread, NULL, &get_user_input, NULL);
-
    /* Load the FRC 2016 communication protocol */
    //DS_Protocol frc2016 = DS_GetProtocolFRC_2016();
    DS_Protocol frc2020 = DS_GetProtocolFRC_2020();
    DS_ConfigureProtocol(&frc2020);
-
    /* Run the application's event loop (unrelated to DS) */
    while (running)
    {
- //     spdlog::info("run as robot.");
       process_events();
       update_interface();
       update_joysticks();
       DS_Sleep(20);
    }
-
    /* Close the DS and the application modules */
    DS_Close();
    close_interface();
    close_joysticks();
-
    /* Exit the application */
    return EXIT_SUCCESS;
 }
-
 /**
  * Checks if the LibDS has any new events and displays them
  * on the console screen.
@@ -120,12 +101,11 @@ static void process_events()
       }
    }
 }
-
 /**
  * Checks if the user has pressed any key on the keyboard and
  * reacts to the given user input
  */
-static void *get_user_input()
+static void *get_user_input(void*)
 {
    while (running)
    {
@@ -156,10 +136,8 @@ static void *get_user_input()
             DS_SetEmergencyStopped(1);
             break;
       }
-
       DS_Sleep(20);
    }
-
    pthread_exit(0);
    return NULL;
 }
