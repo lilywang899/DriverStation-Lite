@@ -20,11 +20,22 @@ static int running = 1;
 static void process_events();
 static void *get_user_input();
 
+
+//#include "spdlog/spdlog.h"
+//#include "spdlog/cfg/env.h"
+//#include "spdlog/fmt/ostr.h"
+
+//using namespace spdlog;
+
+
 /**
  * Main entry point of the application
  */
 int main()
 {
+//   spdlog::warn("Easy padding in numbers like {:08d}", 12);
+//   spdlog::info("Welcome to spdlog version {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
+
    /* Initialize the DS (and its event loop) */
    DS_Init(); //from LibDS.h calls function in init.c
 
@@ -33,7 +44,7 @@ int main()
 
    /* Initialize the application modules */
    // NOTE: disable joy stick for compilation error 
-   // init_joysticks();
+   init_joysticks();
    init_interface();
 
    /* Get user input from a different thread */
@@ -48,6 +59,7 @@ int main()
    /* Run the application's event loop (unrelated to DS) */
    while (running)
    {
+ //     spdlog::info("run as robot.");
       process_events();
       update_interface();
       update_joysticks();

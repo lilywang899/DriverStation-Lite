@@ -34,12 +34,18 @@ static int joystick_tracker = -1;
 static int get_id(const int id)
 {
    int joystick = id;
-#if 0 //disabled for compilation error.
+//#if 0 //disabled for compilation error.
    joystick = abs(joystick_tracker - (joystick + 1));
+   int count;
+   if (SDL_GetJoysticks(&count)!=NULL)
+   {
+      if (joystick >= count)
+      {
+         joystick -= 1;
+      }
+   }
 
-   if (joystick >= SDL_NumJoysticks())
-      joystick -= 1;
-#endif 
+//#endif
    return joystick;
 }
 
@@ -49,19 +55,24 @@ static int get_id(const int id)
 static void register_joysticks(void)
 {
    DS_JoysticksReset();
-#if 0  //disabled for compiation error.
+//#if 0  //disabled for compiation error.
    int i;
-   for (i = 0; i < SDL_NumJoysticks(); ++i)
+   int count;
+   if (SDL_GetJoysticks(&count)!=NULL)
    {
-      SDL_Joystick *joystick = SDL_JoystickOpen(i);
-
-      if (joystick)
+      for (i = 0; i < count; ++i)
       {
-         DS_JoysticksAdd(SDL_GetNumJoystickAxes(joystick), SDL_GetNumJoystickHats(joystick),
-                         SDL_GetNumJoystickButtons(joystick));
+         SDL_Joystick *joystick = SDL_OpenJoystick(i);
+
+         if (joystick)
+         {
+            DS_JoysticksAdd(SDL_GetNumJoystickAxes(joystick), SDL_GetNumJoystickHats(joystick),
+                            SDL_GetNumJoystickButtons(joystick));
+         }
       }
    }
-#endif    
+
+//#endif
 }
 
 /**
@@ -151,12 +162,11 @@ static void process_button_event(SDL_Event *event)
  */
 void init_joysticks(void)
 {
-#if  0  //disabled for compilation error.   
+//#if  0  //disabled for compilation error.
    if (SDL_Init(SDL_INIT_JOYSTICK) == 0)
    {
       initialized = 1;
-      //SDL_JoystickEventState(SDL_ENABLE);
-      SDL_JoystickEventState(SDL_TRUE);
+      SDL_SetJoystickEventsEnabled(true);
    }
 
    else
@@ -164,7 +174,7 @@ void init_joysticks(void)
       printf("Cannot initialize SDL!");
       exit(EXIT_FAILURE);
    }
-#endif    
+//#endif
 }
 
 /**
@@ -172,13 +182,18 @@ void init_joysticks(void)
  */
 void close_joysticks(void)
 {
-#if 0   //disabled for compilation error.
-   int i;
-   for (i = 0; i < SDL_NumJoysticks(); ++i)
-      SDL_JoystickClose(SDL_JoystickOpen(i));
+//#if 0   //disabled for compilation error.
+   int count;
+   if (SDL_GetJoysticks(&count)!=NULL)
+   {
+      int i;
+      for (i = 0; i < count; ++i)
+         SDL_CloseJoystick(SDL_OpenJoystick(i));
 
-   SDL_Quit();
-#endif 
+      SDL_Quit();
+   }
+
+//#endif
 }
 
 /**
@@ -189,7 +204,7 @@ void update_joysticks(void)
 {
    if (!initialized)
       return;
-#if 0 //NOTE: disable for compliation.
+//#if 0 //NOTE: disable for compliation.
    SDL_Event event;
    while (SDL_PollEvent(&event))
    {
@@ -218,5 +233,5 @@ void update_joysticks(void)
             break;
       }
    }
-#endif    
+//#endif
 }
