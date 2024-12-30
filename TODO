@@ -1,0 +1,5 @@
+1) disabled joystick related function and macro due to compilation error.
+2) change from FRC 2016 to FRC 2020.
+3) need to re-orgnize the project with one CMakefile.
+4) remove redundant folder/file for Windows.
+5) conside integrate with another gui layer application later.
