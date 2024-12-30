@@ -60,7 +60,7 @@ static void register_joysticks(void)
    int count;
    if (SDL_GetJoysticks(&count)!=NULL)
    {
-      for (i = 0; i < count; ++i)
+      for (i = 1; i < count; ++i)
       {
          SDL_Joystick *joystick = SDL_OpenJoystick(i);
 
@@ -163,7 +163,7 @@ static void process_button_event(SDL_Event *event)
 void init_joysticks(void)
 {
 //#if  0  //disabled for compilation error.
-   if (SDL_Init(SDL_INIT_JOYSTICK) == 0)
+   if (SDL_InitSubSystem(SDL_INIT_JOYSTICK) == 1)
    {
       initialized = 1;
       SDL_SetJoystickEventsEnabled(true);
@@ -187,7 +187,7 @@ void close_joysticks(void)
    if (SDL_GetJoysticks(&count)!=NULL)
    {
       int i;
-      for (i = 0; i < count; ++i)
+      for (i = 1; i < count; ++i)
          SDL_CloseJoystick(SDL_OpenJoystick(i));
 
       SDL_Quit();
