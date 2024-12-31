@@ -310,11 +310,12 @@ static void register_joysticks(void)
     DS_JoysticksReset();
     int  num_joysticks;
     SDL_GetJoysticks(&num_joysticks);
-    for (int i = 0; i < num_joysticks; ++i)
+    for (int i = 1; i < (num_joysticks+1); ++i)
     {
         SDL_Joystick *joystick = SDL_OpenJoystick(i);
         if (joystick)
         {
+            printf("adding to ds\n");
             DS_JoysticksAdd(SDL_GetNumJoystickAxes(joystick), SDL_GetNumJoystickHats(joystick),
                             SDL_GetNumJoystickButtons(joystick));
         }
@@ -424,16 +425,23 @@ void close_joysticks(void)
  * Queries for new SDL joystick events and updates the
  * Driver Station with the new joystick information.
  */
+
 void update_joysticks(void)
 {
     if (!initialized)
+    {
+        printf("failed");
         return;
+    }
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
+        //DS_StrNew("[INFO] event type! ");
+        //printf("event type! : %d\n",event.type);
         switch (event.type)
         {
             case SDL_EVENT_JOYSTICK_ADDED:
+                printf("joystick added! : %d\n",event.type);
                 joystick_tracker++;
                 register_joysticks();
                 break;
@@ -441,15 +449,18 @@ void update_joysticks(void)
                 register_joysticks();
                 break;
             case SDL_EVENT_JOYSTICK_AXIS_MOTION:
+                printf("axis motion detected\n");
                 process_axis_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_HAT_MOTION:
                 process_hat_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
+                printf("button pressed\n");
                 process_button_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_UP:
+                printf("button released\n");
                 process_button_event(&event);
                 break;
             default:
