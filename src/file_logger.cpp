@@ -8,8 +8,17 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/cfg/env.h"
 #include "spdlog/fmt/ostr.h"
-//#include "spdlog/sinks/basic_file_sink.h"
+#include "spdlog/sinks/basic_file_sink.h"
 #include "spdlog/sinks/rotating_file_sink.h"
+
+#include "nlohmann/json.hpp"
+#include <fstream>
+
+#include "tinyxml2.h"
+
+using namespace nlohmann;
+using namespace tinyxml2;
+
 
 // void basic_logfile_example()
 // {
@@ -31,8 +40,7 @@
 //     }
 // }
 
-#include "spdlog/sinks/rotating_file_sink.h"
-void rotating_example(const std::string &logPath)
+void rotating_logfiles(const std::string &logPath)
 {
  // Create a file rotating logger with 5 MB size max and 3 rotated files
  auto max_size = 3000 * 1;
@@ -44,4 +52,36 @@ void rotating_example(const std::string &logPath)
 
  spdlog::get("test_logger")->info("LoggingTest::ctor");
 }
+
+int init_logging()
+{
+ std::string fileLocation_json = "/home/lily/share/ds_config.json";
+ std::ifstream f(fileLocation_json.c_str());
+
+ if (!f.is_open()) {
+  XMLDocument configObj;
+  XMLError result = configObj.LoadFile( "/home/lily/share/ds_config.xml" );
+  if (result != XML_SUCCESS) {
+   printf("could not find .xml or .json");
+   return -1;
+  }
+
+  XMLElement * RootElement = configObj.RootElement();
+  const char* logLevel = RootElement->FirstChildElement( "logger_config" )->FirstChildElement( "log_level" )->GetText();
+  const char* logPath = RootElement->FirstChildElement( "logger_config" )->FirstChildElement( "log_file_path" )->GetText();
+  spdlog::info("xml configObj.logger_config.log_level : {}", logLevel);
+  rotating_logfiles(logPath);
+ }
+ else
+ {
+  json configObj = json::parse(f);
+  std::string logLevel = configObj.at("logger_config").at("log_level");
+  std::string logPath = configObj.at("logger_config").at("log_file_path");
+  spdlog::info("json configObj.logger_config.log_level : {}", logLevel);
+  rotating_logfiles(logPath);
+ }
+ return 0;
+}
+
+
 

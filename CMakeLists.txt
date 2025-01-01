@@ -34,6 +34,8 @@ target_include_directories(
         include
         lib/include
         /usr/local/include/SDL3
+        /usr/local/include
+
 )
 
 target_link_libraries(
@@ -45,6 +47,7 @@ target_link_libraries(
        fmt
        spdlog
         nlohmann_json::nlohmann_json
+        tinyxml2
 )
 
 add_subdirectory(lib)

@@ -18,17 +18,13 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/cfg/env.h"
 #include "spdlog/fmt/ostr.h"
-#include "spdlog/sinks/basic_file_sink.h"
 
-#include "nlohmann/json.hpp"
-#include <fstream>
-using namespace nlohmann;
 using namespace spdlog;
 
 static int running = 1;
 static void process_events();
 static void *get_user_input(void *);
-void rotating_example(const std::string &logPath);
+int init_logging();
 
 /**
  * Main entry point of the application
@@ -38,17 +34,8 @@ int main()
    spdlog::warn("Easy padding in numbers like {:08d}", 12);
    spdlog::info("Welcome to spdlog version {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
 
-   //nlohmann/json
-   std::string fileLocation_json = "/opt/LiteDS/ds_config.json";
-   std::ifstream f(fileLocation_json.c_str());
+   init_logging();
 
-   json configObj = json::parse(f);
-   std::string logLevel = configObj.at("LOGGER_CONFIG").at("LOGLEVEL");
-   std::string logPath = configObj.at("LOGGER_CONFIG").at("LOG_FILE_PATH");
-
-   spdlog::info("configObj.LOGGER_CONFIG.LOGLEVEL : {}", logLevel);
-
-   rotating_example(logPath);
    /* Initialize the DS (and its event loop) */
    DS_Init();
    /* Connect to the FRC simulator (or OpenRIO Sim) */
