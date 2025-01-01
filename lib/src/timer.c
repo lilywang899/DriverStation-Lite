@@ -28,6 +28,10 @@
 #include <stdio.h>
 #include <assert.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
+
 #if defined _WIN32
 #   include <windows.h>
 #else
@@ -74,6 +78,8 @@ void Timers_Init(void)
 {
    running = 1; //starts running
    DS_ArrayInit(&timers, 10);
+   spdlog::info("initializing timers, running = {}",running);
+
 }
 
 /**
@@ -83,6 +89,8 @@ void Timers_Close(void)
 {
    running = 0;
    DS_ArrayFree(&timers);
+   spdlog::info("stopping timer modules, running = {}",running);
+
 }
 
 /**

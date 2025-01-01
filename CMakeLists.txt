@@ -3,6 +3,10 @@ project(console_ds LANGUAGES C CXX)
 find_program(CMAKE_C_COMPILER NAMES $ENV{CC} gcc PATHS ENV PATH NO_DEFAULT_PATH)
 find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PATH)
 
+include(FetchContent)
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+FetchContent_MakeAvailable(json)
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -20,6 +24,7 @@ add_executable(
         console_ds
         src/main.c
         src/interface.c
+        src/file_logger.cpp
 )
 #cmake_print_variables(${LIBWEBSOCKETS_INCLUDE_DIRS})
 
@@ -37,6 +42,9 @@ target_link_libraries(
        ds
        ncurses
        SDL3::SDL3
+       fmt
+       spdlog
+        nlohmann_json::nlohmann_json
 )
 
 add_subdirectory(lib)
