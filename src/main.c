@@ -19,8 +19,6 @@
 #include "spdlog/cfg/env.h"
 #include "spdlog/fmt/ostr.h"
 
-using namespace spdlog;
-
 static int running = 1;
 static void process_events();
 static void *get_user_input(void *);
@@ -40,6 +38,7 @@ int main()
    DS_Init();
    /* Connect to the FRC simulator (or OpenRIO Sim) */
    DS_SetCustomRobotAddress("127.0.0.1");
+   //DS_SetCustomRobotAddress("192.168.2.111");
    /* Initialize the application modules */
    init_joysticks();
    init_interface();

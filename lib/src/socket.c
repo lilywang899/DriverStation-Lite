@@ -15,7 +15,6 @@
 #include "spdlog/cfg/env.h"
 #include "spdlog/fmt/ostr.h"
 
-
 #define SPRINTF_S snprintf
 #ifdef _WIN32
 #   ifndef __MINGW32__
@@ -55,6 +54,7 @@ static void read_socket(DS_Socket *ptr)
       int i;
       for (i = 0; i < read; ++i)
          ptr->info.buffer[i] = data[i];
+         spdlog::info("printing data received: {}",data);
    }
 }
 
@@ -85,7 +85,6 @@ static void server_loop(DS_Socket *ptr)
    {
       tv.tv_sec = 0;
       tv.tv_usec = 5000 * 100;
-
       FD_ZERO(&set);
       FD_SET(ptr->info.sock_in, &set);
 
@@ -365,7 +364,7 @@ void DS_SocketChangeAddress(DS_Socket *ptr, const char *address)
    /* Re-assign the address */
    memset(ptr->address, 0, sizeof(ptr->address));
    memcpy(ptr->address, address, strlen(address));
-
+   spdlog::info("socket address changed to: {}", ptr->address);
    /* Re-open the socket */
    DS_SocketClose(ptr);
    DS_SocketOpen(ptr);

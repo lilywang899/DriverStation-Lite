@@ -138,7 +138,7 @@ void DS_TimerStart(DS_Timer *timer)
 void DS_TimerReset(DS_Timer *timer)
 {
    assert(timer);
-
+   spdlog::info("resetting timer");
    timer->expired = 0;
    timer->elapsed = 0;
 }
