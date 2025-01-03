@@ -48,7 +48,6 @@ void rotating_logfiles(const std::string &logPath)
  auto max_size = 3000 * 1;
  auto max_files = 3;
  auto logger = spdlog::rotating_logger_mt("test_logger", logPath, max_size, max_files);
-
  spdlog::set_default_logger(logger);
  spdlog::flush_on(spdlog::level::info);
 
@@ -61,7 +60,7 @@ int init_logging()
  {
   Node configObj = LoadFile("/home/lily/share/LiteDS_docs/config_files/ds_config.yaml");
   const char * logLevel = configObj["logger_config"]["log_level"].as<std::string>().c_str();
-  const char * logPath = configObj["logger_config"]["log_file_path"].as<std::string>().c_str();
+  const std::string logPath = configObj["logger_config"]["log_file_path"].as<std::string>();
   spdlog::info("yaml configObj.logger_config.log_level : {}", logLevel);
   rotating_logfiles(logPath);
  }
@@ -73,7 +72,6 @@ int init_logging()
    printf("could not find .xml or .json");
    return -1;
   }
-
   XMLElement * RootElement = configObj.RootElement();
   const char* logLevel = RootElement->FirstChildElement( "logger_config" )->FirstChildElement( "log_level" )->GetText();
   const char* logPath = RootElement->FirstChildElement( "logger_config" )->FirstChildElement( "log_file_path" )->GetText();
