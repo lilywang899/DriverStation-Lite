@@ -775,7 +775,7 @@ DS_Protocol DS_GetProtocolFRC_2015(void)
    protocol.robot_socket = *DS_SocketEmpty();
    protocol.robot_socket.disabled = 0;
    protocol.robot_socket.in_port = 1150;
-   protocol.robot_socket.out_port = 1110;
+   protocol.robot_socket.out_port = 1180;
    protocol.robot_socket.type = DS_SOCKET_UDP;
 
    /* Define netconsole socket properties */

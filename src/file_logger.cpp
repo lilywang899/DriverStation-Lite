@@ -15,9 +15,11 @@
 #include <fstream>
 
 #include "tinyxml2.h"
+#include "yaml-cpp/yaml.h"
 
 using namespace nlohmann;
 using namespace tinyxml2;
+using namespace YAML;
 
 
 // void basic_logfile_example()
@@ -46,7 +48,6 @@ void rotating_logfiles(const std::string &logPath)
  auto max_size = 3000 * 1;
  auto max_files = 3;
  auto logger = spdlog::rotating_logger_mt("test_logger", logPath, max_size, max_files);
-
  spdlog::set_default_logger(logger);
  spdlog::flush_on(spdlog::level::info);
 
@@ -55,31 +56,29 @@ void rotating_logfiles(const std::string &logPath)
 
 int init_logging()
 {
- std::string fileLocation_json = "/home/lily/share/ds_config.json";
- std::ifstream f(fileLocation_json.c_str());
-
- if (!f.is_open()) {
+ try
+ {
+  Node configObj = LoadFile("/home/lily/share/LiteDS_docs/config_files/ds_config.yaml");
+  const char * logLevel = configObj["logger_config"]["log_level"].as<std::string>().c_str();
+  const std::string logPath = configObj["logger_config"]["log_file_path"].as<std::string>();
+  spdlog::info("yaml configObj.logger_config.log_level : {}", logLevel);
+  rotating_logfiles(logPath);
+ }
+ catch (const YAML::BadFile& e)
+ {
   XMLDocument configObj;
-  XMLError result = configObj.LoadFile( "/home/lily/share/ds_config.xml" );
+  XMLError result = configObj.LoadFile( "/home/lily/share/LiteDS_docs/config_files/ds_config.xml" );
   if (result != XML_SUCCESS) {
    printf("could not find .xml or .json");
    return -1;
   }
-
   XMLElement * RootElement = configObj.RootElement();
   const char* logLevel = RootElement->FirstChildElement( "logger_config" )->FirstChildElement( "log_level" )->GetText();
   const char* logPath = RootElement->FirstChildElement( "logger_config" )->FirstChildElement( "log_file_path" )->GetText();
   spdlog::info("xml configObj.logger_config.log_level : {}", logLevel);
   rotating_logfiles(logPath);
  }
- else
- {
-  json configObj = json::parse(f);
-  std::string logLevel = configObj.at("logger_config").at("log_level");
-  std::string logPath = configObj.at("logger_config").at("log_file_path");
-  spdlog::info("json configObj.logger_config.log_level : {}", logLevel);
-  rotating_logfiles(logPath);
- }
+
  return 0;
 }
 

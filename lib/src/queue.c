@@ -118,7 +118,7 @@ void DS_QueuePush(DS_Queue *queue, void *item)
    if (queue->rear >= queue->capacity)
       queue->rear = 0;
 
-   /* Since we don't want to depend on potential idiots, copy the data */
+   /* Since we don't want to depend on other people, copy the data */
    assert(queue->buffer);
    memcpy(queue->buffer[queue->rear], item, queue->item_size);
 }

@@ -1,7 +1,7 @@
 <config>
     <logger_config>
         <log_level>INFO</log_level>
-        <log_file_path>/home/lily/share/LiteDS/xml_log.txt</log_file_path>
+        <log_file_path>/home/lily/share/LiteDS_docs/LiteDS_logfiles/ds_log.txt</log_file_path>
     </logger_config>
 
     <node_profile>
