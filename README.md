@@ -6,8 +6,10 @@ The DriverStation library allows you to connect and manage a robot easily by pro
 
 The library is written in C, allowing it to be used in many platforms and/or programming languages (using wrappers).
 
-### Features
+## Credit
+This code was originally inspired by [FRC-Utilities/LibDS](https://github.com/FRC-Utilities/LibDS/tree/master) created by [Alex Spataru]. 
 
+### Features
 
 LibDS implements the following features:
 
@@ -19,142 +21,19 @@ LibDS implements the following features:
 - Abstract-protocol object
 - Cross-platform socket handling 
 
-You may find a lot of mistakes here, be it design choices or just stupid mistakes. If you spot something, I would be very grateful if you could tell me about it (or make a pull request).
+Significant modifications and improvements include:
 
-### Example Projects
+- Migrated legacy SDL modules and developed a joystick testing tool to troubleshoot connectivity and proper functionality 
+- Implemented dynamic configuration for driver station and robot simulator using YAML and XML files
+- Developed a robot simulator using python to test driver station functionalities for multiple protocols 
+- Implemented multi-threaded async socket communication between driver station and robot simulator 
+- Used data driven robot behavior testing by storing test data in JSON file and integrating comprehensive log module
 
-![Image](examples/ConsoleDS/etc/screenshot.png)
+Work in progress:
 
-I have created two example projects to demonstrate the uses of LibDS:
-
-- A command-line DS with SDL and ncurses/pdcurses
-- A graphical UI DS with Qt4/Qt5 and C++
-
-You can browse the code of the examples [here](examples/)!
-
-### Quick Introduction
-
-#### Initialization
-
-The LibDS has its own event loop, which runs on a separate thread. To start the DS engine, you must call `DS_Init()`, which initializes all the modules of the LibDS (config, events, joysticks, etc).
-
-You should initialize the DS before initalizing any of your application components that interact with the DS. Check this example:
-
-```c
-#include <LibDS.h>
-
-int main() {
-   /* Initialize the DS */
-   DS_Init();
-
-   /* Now proceed to initializing your application */
-   DeepMagic();
-   VoodooInit();
-   HeavyWizardry();
-   
-   /* Load the 2016 protocol, the protocol can be safely changed during runtime. 
-    *
-    * Also, the LibDS can operate safely without a loaded protocol, 
-    * so there is no rush to call this function. 
-    */
-   DS_ConfigureProtocol (DS_GetProtocolFRC_2016());
-}
-```
-
-#### Communication protocols
-
-After initializing the DS, you must load a protocol, which instructs the LibDS on the following processes:
-
-- How to create client packets:
-   - DS-to-robot packets
-   - DS-to-radio packets
-   - DS-to-FMS packets
-
-- How to read and interpret incoming packets
-
-- How to connect to the different network targets:
-   - Input and output ports
-   - IP protocol type (UDP or TCP)
-   - Which IP addresses to use
-
-- Last but not least, the sender timings, for example:
-   - Send DS-to-robot packets every 20 ms
-   - Send DS-to-FMS packets every 500 ms
-   - Do not send DS-to-radio packets
-
-The LibDS has built-in support for the following protocols:
-- FRC 2009-2014
-- FRC 2015
-- FRC 2016 (same as 2015, but with different robot address)
-- FRC 2020 (in development)
-
-To load a protocol, use the `DS_ConfigureProtocol()` function. As a final note, you can also implement your own protocols and instruct the LibDS to use it. 
-
-
-#### Interacting with the DS events
-
-The LibDS registers the different events in a FIFO (First In, First Out) queue, to access the events, use the `DS_PollEvent()` function in a while loop. Each event has a "type" code, which allows you to know what kind of event are you dealing with. 
-
-The easiest way to react to the DS events is the following (pseudo-code):
-
-```c
-DS_Event event;
-while (DS_PollEvent (event)) {
-   switch (event.type) {
-      case DS_EVENT_X:
-         // react to x event
-      case DS_EVENT_Y:
-         // react to y event
-   }
-}
-```
-
-The code above must be called periodically. Here is a (functional) example:
-
-```c
-#include <LibDS.h>
-#include <stdio.h>
-
-static void process_events();
-
-int main() {
-   DS_Init();
-   DS_ConfigureProtocol (DS_GetProtocolFRC_2016());
-   
-   while (1) {
-      process_events();
-      DS_Sleep (10);
-   }
-   
-   return EXIT_SUCCESS;
-}
-
-void process_events() {
-   DS_Event event;
-   while (DS_PollEvent (&event)) {
-      switch (event.type) {
-      case DS_ROBOT_ENABLED:
-         printf ("Robot enabled\n");
-         break;
-      case DS_ROBOT_DISABLED:
-         printf ("Robot disabled\n");
-         break;
-      case DS_ROBOT_CONNECTED:
-         printf ("Connected to robot\n");
-         break;
-      case DS_ROBOT_DISCONNECTED:
-         printf ("Disconnected to robot\n");
-         break;
-      case DS_ROBOT_VOLTAGE_CHANGED:
-         printf ("Robot voltage set to: %f\n", event.robot.voltage);
-         break;
-      default:
-         break;
-      }
-   }
-}
-```
-
+- Adding FRC 2025 protocol to driver station to ensure compatibility with this year's FRC robot
+- Connecting driver station with a [robot agent])(https://github.com/lilywang899/Robot-Agent) to reduce load of robot and replace RoboRIO with Raspberry Pi 
+  
 ### Project Architecture
 
 #### 'Private' vs. 'Public' members
