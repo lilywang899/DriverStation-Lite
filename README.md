@@ -32,7 +32,7 @@ Significant modifications and improvements include:
 Work in progress:
 
 - Adding FRC 2025 protocol to driver station to ensure compatibility with this year's FRC robot
-- Connecting driver station with a [robot agent])(https://github.com/lilywang899/Robot-Agent) to reduce load of robot and replace RoboRIO with Raspberry Pi 
+- Connecting driver station with a [robot agent](https://github.com/lilywang899/Robot-Agent) to reduce load of robot and replace RoboRIO with Raspberry Pi 
   
 ### Project Architecture
 
