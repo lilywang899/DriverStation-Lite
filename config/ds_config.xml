@@ -1,0 +1,13 @@
+<config>
+    <logger_config>
+        <log_level>INFO</log_level>
+        <log_file_path>/home/lily/share/LiteDS_docs/LiteDS_logfiles/ds_log.txt</log_file_path>
+    </logger_config>
+
+    <node_profile>
+        <name>Roborio</name>
+        <ip_addr>127.0.0.1</ip_addr>
+        <ip_port>8080</ip_port>
+    </node_profile>
+</config>
+

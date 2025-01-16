@@ -19,6 +19,10 @@
 #include <string.h>
 #include <pthread.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
+
 #define SEND_PRECISION 1 /* Update the sender timers every millisecond */
 #define RECV_PRECISION 50 /* Update the watchdogs every 50 milliseconds */
 
@@ -129,6 +133,7 @@ static void send_robot_data()
       DS_String data = protocol.create_robot_packet();
       sent_robot_bytes += DS_Max(DS_SocketSend(&protocol.robot_socket, &data), 0);
       DS_StrRmBuf(&data);
+      //spdlog::info("sending data {}", data.len);
    }
 }
 
@@ -194,6 +199,8 @@ static void recv_data()
    robot_data = DS_SocketRead(&protocol.robot_socket);
    netcs_data = DS_SocketRead(&protocol.netconsole_socket);
 
+   //spdlog::info("receiving robot data\n");
+
    /* Update received data indicators */
    recv_fms_bytes += DS_StrLen(&fms_data);
    recv_radio_bytes += DS_StrLen(&radio_data);
@@ -220,6 +227,7 @@ static void recv_data()
    {
       ++received_robot_packets;
       robot_read = protocol.read_robot_packet(&robot_data);
+      spdlog::info("robot_read: {}", robot_read);
       CFG_SetRobotCommunications(robot_read);
    }
 
@@ -278,8 +286,9 @@ static void update_watchdogs()
  *    - Feed/reset the watchdogs
  *    - Check if any of the watchdogs has expired
  */
-static void *run_event_loop()
+static void *run_event_loop(void *)
 {
+   spdlog::info("running event loop");
    while (running)
    {
       send_data();

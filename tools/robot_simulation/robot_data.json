@@ -1,0 +1,47 @@
+{
+
+  "message": [
+    {
+      "index": 0,
+      "type": "UDP",
+      " Status": 3010001,
+      " Trace": "SUM",
+      " Battery": "GP_INTERVAL_SEC",
+      " Disk_Info": "RACH",
+      " Cpu_Info": "PreambleDedCell",
+      " CAN_Metrics": "PreambleDedCell",
+      " RAM_Info": ["/NRCellDU"]
+    },
+    {
+      "index": 1,
+      "type": "UDP",
+      " Status": 3010001,
+      " Trace": "SUM",
+      " Battery": "GP_INTERVAL_SEC",
+      " Disk_Info": "RACH",
+      " Cpu_Info": "PreambleDedCell",
+      " CAN_Metrics": "PreambleDedCell",
+      " RAM_Info": ["/NRCellDU"]
+
+    },
+    {
+      "index": 2,
+      "type": "UDP",
+      " Status": 3010001,
+      " Trace": "SUM",
+      " Battery": "GP_INTERVAL_SEC",
+      " Disk_Info": "RACH",
+      " Cpu_Info": "PreambleDedCell",
+      " CAN_Metrics": "PreambleDedCell",
+      " RAM_Info": ["/NRCellDU"]
+    },
+
+    {
+      "index": 3,
+      "type": "TCP",
+      " Radio_Events ": 3010001,
+      " Error_Message ": "SUM",
+      " Disable_Faults ": "GP_INTERVAL_SEC"
+    }
+  ]
+}

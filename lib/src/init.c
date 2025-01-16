@@ -7,7 +7,9 @@
 
 #include "LibDS.h"
 #include "DS_Config.h"
-
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
 static int init = 0;
 
 /**
@@ -19,6 +21,8 @@ void DS_Init(void)
 {
    if (!DS_Initialized())
    {
+      spdlog::info("initializing modules of LibDS library");
+
       init = 1;
 
       Timers_Init(); //sets running to true and timers to a ds_array with data size of 10

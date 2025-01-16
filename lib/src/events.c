@@ -12,6 +12,10 @@
 #include <assert.h>
 #include <stdlib.h>
 
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
+
 static DS_Queue events;
 
 /**
@@ -20,6 +24,8 @@ static DS_Queue events;
 void Events_Init(void)
 {
    DS_QueueInit(&events, 50, sizeof(DS_Event));
+   spdlog::info("event queue initialized, queue capacity = {}, event size = {}", events.capacity, events.item_size);
+
 }
 
 /**
