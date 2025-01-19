@@ -60,6 +60,29 @@ def recv_data(server_socket):
         if int.from_bytes(reply,byteorder='big') & cEnabled:
             logger.info('Robot is enabled')
 
+def create_packet(voltage):
+    """
+    Create a packet to send a specific voltage.
+    :param voltage: The voltage value to encode (e.g., 5.0).
+    :return: A list representing the packet.
+    """
+    # Integer part (upper byte) of the voltage
+    upper = int(voltage)  # 5 for 5.0
+
+    # Fractional part (lower byte), scaled to 0-255
+    lower = int((voltage - upper) * 0xFF)  # 0 for 5.0
+
+    # Construct the packet
+    packet = [0x00] * 10  # Initialize a 10-byte packet with 0s
+    packet[3] = 0x01  # Example control byte
+    packet[4] = 0x02  # Example robot status byte
+    packet[5] = upper  # Upper byte for the voltage
+    packet[6] = lower  # Lower byte for the voltage
+    packet[7] = 0x01  # Example request flag
+
+    # Return only the relevant part of the packet
+    return packet[:8]
+
 def main():
     logging.basicConfig(filename='/home/lily/share/LiteDS_docs/robot_sim/ds_data.log',
                         level=logging.INFO,
@@ -74,11 +97,13 @@ def main():
         print('Failed to create socket')
         sys.exit()
 
-    msg = "H"
+    #msg = "H" lily
+    
+    packet = create_packet(5)
 
     try:
         start_new_thread(recv_data, (s,))
-        timer = Timer(2, send_data, args=(s, msg))
+        timer = Timer(2, send_data, args=(s, packet))
         timer.start()
         time.sleep(10)
         timer.cancel()
