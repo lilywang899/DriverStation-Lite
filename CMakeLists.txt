@@ -25,6 +25,12 @@ FetchContent_MakeAvailable(yaml)
 FetchContent_Declare(spdlog URL https://github.com/gabime/spdlog/archive/refs/tags/v1.14.1.tar.gz)
 FetchContent_MakeAvailable(spdlog)
 
+FetchContent_Declare(fmt
+        GIT_REPOSITORY https://github.com/fmtlib/fmt.git
+        GIT_TAG        10.2.1  # Use a known stable version
+)
+FetchContent_MakeAvailable(fmt)
+
 FetchContent_Declare(SDL3 URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.0.tar.gz)
 FetchContent_MakeAvailable(SDL3)
 
@@ -44,9 +50,9 @@ target_include_directories(
         PRIVATE
         include
         lib/include
-        /usr/local/include/SDL3
-        /usr/local/include
-
+        ~/vcpkg/packages/tinyxml2_x64-linux/include
+#        /usr/local/include/SDL3
+#        /usr/local/include
 )
 
 target_link_libraries(
@@ -55,11 +61,17 @@ target_link_libraries(
        ds
        ncurses
        SDL3::SDL3
-       fmt
-       spdlog
+        fmt::fmt
+       spdlog::spdlog
         nlohmann_json::nlohmann_json
         tinyxml2
         yaml-cpp::yaml-cpp
+)
+
+target_link_directories(
+        console_ds
+        PRIVATE
+        ~/vcpkg/packages/tinyxml2_x64-linux/lib
 )
 
 add_subdirectory(lib)

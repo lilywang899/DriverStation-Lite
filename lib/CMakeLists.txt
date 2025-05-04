@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.12.0)
 find_program(CMAKE_C_COMPILER NAMES $ENV{CC} gcc PATHS ENV PATH NO_DEFAULT_PATH)
 find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PATH)
 
-project(console_ds)
-
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -52,8 +50,6 @@ target_include_directories(
      PRIVATE
      include
      PUBLIC
-        /usr/local/include/SDL3
-
 )
 
 target_link_libraries(
@@ -61,6 +57,7 @@ target_link_libraries(
        PRIVATE
         m
         SDL3::SDL3
+        spdlog::spdlog
 )
 
 target_link_directories(

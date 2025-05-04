@@ -9,7 +9,7 @@
 #include "DS_Config.h"
 #include "DS_Events.h"
 #include "DS_Joysticks.h"
-#include "SDL.h"
+#include "SDL3/SDL.h"
 #include <stdio.h>
 
 /**
