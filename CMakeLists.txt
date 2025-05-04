@@ -34,6 +34,9 @@ FetchContent_MakeAvailable(fmt)
 FetchContent_Declare(SDL3 URL https://github.com/libsdl-org/SDL/archive/refs/tags/release-3.2.0.tar.gz)
 FetchContent_MakeAvailable(SDL3)
 
+FetchContent_Declare(tinyxml2 URL https://github.com/leethomason/tinyxml2/archive/refs/tags/10.0.0.tar.gz)
+FetchContent_MakeAvailable(tinyxml2)
+
 #find_package(spdlog REQUIRED)
 #find_package(SDL3 REQUIRED CONFIG REQUIRED COMPONENTS SDL3-shared )
 
@@ -50,7 +53,7 @@ target_include_directories(
         PRIVATE
         include
         lib/include
-        ~/vcpkg/packages/tinyxml2_x64-linux/include
+#        ~/vcpkg/packages/tinyxml2_x64-linux/include #tinyxml2 needs to be downloaded manually to local environment through vcpkg
 #        /usr/local/include/SDL3
 #        /usr/local/include
 )
@@ -64,15 +67,15 @@ target_link_libraries(
         fmt::fmt
        spdlog::spdlog
         nlohmann_json::nlohmann_json
-        tinyxml2
+        tinyxml2::tinyxml2
         yaml-cpp::yaml-cpp
 )
 
-target_link_directories(
-        console_ds
-        PRIVATE
-        ~/vcpkg/packages/tinyxml2_x64-linux/lib
-)
+#target_link_directories(
+#        console_ds
+#        PRIVATE
+#        ~/vcpkg/packages/tinyxml2_x64-linux/lib
+#)
 
 add_subdirectory(lib)
 #target_compile_options(mqtt PRIVATE -Wall -Wextra -pedantic -Werror -Wno-unused-function)
