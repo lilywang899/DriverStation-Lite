@@ -13,8 +13,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unused-local-typedefs  -fPIC -g -O0
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 
-find_package(SDL3 REQUIRED )
-find_package(spdlog REQUIRED)
+#find_package(SDL3 REQUIRED )
+#find_package(spdlog REQUIRED)
 
 set(CFILES
      src/protocols/frc_2014.c 
