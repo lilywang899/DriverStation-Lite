@@ -1,5 +1,6 @@
 cmake_minimum_required(VERSION 3.12.0)
-project(console_ds LANGUAGES C CXX)
+#project(console_ds LANGUAGES C CXX)
+project(console_ds)
 
 find_program(CMAKE_C_COMPILER NAMES $ENV{CC} gcc PATHS ENV PATH NO_DEFAULT_PATH)
 find_program(CMAKE_CXX_COMPILER NAMES $ENV{CXX} g++ PATHS ENV PATH NO_DEFAULT_PATH)
@@ -22,7 +23,14 @@ FetchContent_MakeAvailable(json)
 FetchContent_Declare(yaml URL https://github.com/jbeder/yaml-cpp/archive/refs/tags/yaml-cpp-0.7.0.tar.gz)
 FetchContent_MakeAvailable(yaml)
 
-FetchContent_Declare(spdlog URL https://github.com/gabime/spdlog/archive/refs/tags/v1.14.1.tar.gz)
+#FetchContent_Declare(spdlog URL https://github.com/gabime/spdlog/archive/refs/tags/v1.14.1.tar.gz)
+#FetchContent_MakeAvailable(spdlog)
+
+include(FetchContent)
+FetchContent_Declare(spdlog
+        GIT_REPOSITORY https://github.com/gabime/spdlog.git
+        GIT_TAG v1.3.1
+)
 FetchContent_MakeAvailable(spdlog)
 
 FetchContent_Declare(fmt
@@ -81,4 +89,4 @@ add_subdirectory(lib)
 #target_compile_options(mqtt PRIVATE -Wall -Wextra -pedantic -Werror -Wno-unused-function)
 target_compile_options(console_ds PRIVATE -Wall -Wextra -Wno-unused-function)
 
-set_source_files_properties( src/main.c src/interface.c PROPERTIES LANGUAGE CXX)
+#set_source_files_properties( src/main.c src/interface.c PROPERTIES LANGUAGE CXX)
