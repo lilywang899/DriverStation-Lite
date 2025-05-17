@@ -79,10 +79,11 @@ static void server_loop(DS_Socket *ptr)
 #ifndef _WIN32
    set_socket_block(ptr->info.sock_in, 0);
 #endif
-
+   spdlog::info("FD_SETSIZE: {}",FD_SETSIZE);
    /* Run the server while the socket is valid */
    while (ptr->info.server_init && ptr->info.sock_in > 0)
    {
+
       tv.tv_sec = 0;
       tv.tv_usec = 5000 * 100;
       FD_ZERO(&set);
@@ -93,10 +94,11 @@ static void server_loop(DS_Socket *ptr)
 #else
       fd = ptr->info.sock_in + 1;
 #endif
-
+      spdlog::info("file descriptor value: {}", fd);
       rc = select(fd, &set, NULL, NULL, &tv);
       if (rc > 0 && FD_ISSET(ptr->info.sock_in, &set))
          read_socket(ptr);
+
    }
 }
 
