@@ -24,8 +24,6 @@ static DS_Queue events;
 void Events_Init(void)
 {
    DS_QueueInit(&events, 50, sizeof(DS_Event));
-   spdlog::info("event queue initialized, queue capacity = {}, event size = {}", events.capacity, events.item_size);
-
 }
 
 /**
