@@ -293,7 +293,7 @@ static void *run_event_loop(void *)
    {
       send_data();
       recv_data();
-      update_watchdogs();
+      //update_watchdogs();
       DS_Sleep(5);
    }
 
@@ -426,10 +426,10 @@ void DS_ConfigureProtocol(const DS_Protocol *ptr)
    protocol = *ptr;
 
    /* Update sockets */
-   DS_SocketOpen(&protocol.fms_socket);
-   DS_SocketOpen(&protocol.radio_socket);
+   //DS_SocketOpen(&protocol.fms_socket);
+   //DS_SocketOpen(&protocol.radio_socket);
    DS_SocketOpen(&protocol.robot_socket);
-   DS_SocketOpen(&protocol.netconsole_socket);
+   //DS_SocketOpen(&protocol.netconsole_socket);
 
    /* Update sender timers */
    fms_send_timer.time = protocol.fms_interval;
