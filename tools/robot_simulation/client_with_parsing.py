@@ -84,7 +84,7 @@ def create_packet(voltage):
     return packet[:8]
 
 def main():
-    logging.basicConfig(filename='/home/lily/share/LiteDS_docs/robot_sim/ds_data.log',
+    logging.basicConfig(filename='/home/lily/DriverStation-Lite/log/ds_data.log',
                         level=logging.INFO,
                         format='%(asctime)s - %(levelname)s [%(lineno)d] %(message)s',
                         datefmt='%d/%m/%Y %I:%M:%S%p')
@@ -103,14 +103,18 @@ def main():
 
     try:
         start_new_thread(recv_data, (s,))
-        timer = Timer(2, send_data, args=(s, packet))
-        timer.start()
-        time.sleep(10)
-        timer.cancel()
+        # timer = Timer(2, send_data, args=(s, packet))
+        # timer.start()
+        # time.sleep(10)
+        # timer.cancel()
 
     except (socket.error, msg):
         print('Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
         sys.exit()
+
+    while(1):
+        sleep(10)
+
 
 if __name__== '__main__':
     main()
