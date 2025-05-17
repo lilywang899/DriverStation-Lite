@@ -103,14 +103,18 @@ def main():
 
     try:
         start_new_thread(recv_data, (s,))
-        timer = Timer(2, send_data, args=(s, packet))
-        timer.start()
-        time.sleep(10)
-        timer.cancel()
+        #timer = Timer(2, send_data, args=(s, packet))
+        # timer.start()
+        # time.sleep(10)
+        # timer.cancel()
 
     except (socket.error, msg):
         print('Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
         sys.exit()
+
+    while(1){
+        sleep(10)
+    }
 
 if __name__== '__main__':
     main()

@@ -293,7 +293,7 @@ static void *run_event_loop(void *)
    {
       send_data();
       recv_data();
-      update_watchdogs();
+      //update_watchdogs();
       DS_Sleep(5);
    }
 
