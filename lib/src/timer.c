@@ -78,8 +78,6 @@ void Timers_Init(void)
 {
    running = 1; //starts running
    DS_ArrayInit(&timers, 10);
-   spdlog::info("initializing timers, running = {}",running);
-
 }
 
 /**
@@ -89,8 +87,6 @@ void Timers_Close(void)
 {
    running = 0;
    DS_ArrayFree(&timers);
-   spdlog::info("stopping timer modules, running = {}",running);
-
 }
 
 /**

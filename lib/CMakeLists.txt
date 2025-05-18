@@ -15,7 +15,6 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 #find_package(spdlog REQUIRED)
 
 set(CFILES
-     src/protocols/frc_2014.c 
      src/protocols/frc_2015.c 
      src/protocols/frc_2016.c 
      src/protocols/frc_2020.c
@@ -33,7 +32,6 @@ set(CFILES
 
 set(LIBS
         ${CFILES}
-        src/crc32.c
         src/array.c
         src/string.c
         src/joysticks.c

@@ -29,16 +29,13 @@ int init_logging();
  */
 int main()
 {
-   spdlog::warn("Easy padding in numbers like {:08d}", 12);
-   spdlog::info("Welcome to spdlog version {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
+    spdlog::info("spdlog version  {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
 
    init_logging();
 
    /* Initialize the DS (and its event loop) */
    DS_Init();
-   /* Connect to the FRC simulator (or OpenRIO Sim) */
-   DS_SetCustomRobotAddress("127.0.0.1");
-   //DS_SetCustomRobotAddress("192.168.2.111");
+
    /* Initialize the application modules */
    init_joysticks();
    init_interface();
@@ -49,6 +46,10 @@ int main()
    //DS_Protocol frc2016 = DS_GetProtocolFRC_2016();
    DS_Protocol frc2020 = DS_GetProtocolFRC_2020();
    DS_ConfigureProtocol(&frc2020);
+
+   /* Connect to the FRC simulator (or OpenRIO Sim) */
+   // enable only one socket temporarily.
+   DS_SetCustomRobotAddress("127.0.0.1");
    /* Run the application's event loop (unrelated to DS) */
    while (running)
    {
