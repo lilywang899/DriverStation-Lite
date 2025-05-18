@@ -258,7 +258,8 @@ static DS_String radio_address(void)
  */
 static DS_String robot_address(void)
 {
-   return DS_GetStaticIP(10, CFG_GetTeamNumber(), 2);
+   //return DS_GetStaticIP(10, CFG_GetTeamNumber(), 2);
+   return DS_GetStaticIP(127, CFG_GetTeamNumber(), 1);
 }
 
 /**
@@ -479,7 +480,7 @@ DS_Protocol DS_GetProtocolFRC_2014(void)
    protocol.fms_address = &fms_address;
    protocol.radio_address = &radio_address;
    protocol.robot_address = &robot_address;
-
+   //protocol.robot_address = 127.0.0.1;
    /* Set packet generator functions */
    protocol.create_fms_packet = &create_fms_packet;
    protocol.create_radio_packet = &create_radio_packet;

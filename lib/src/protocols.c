@@ -131,6 +131,7 @@ static void send_robot_data()
    {
       ++sent_robot_packets;
       DS_String data = protocol.create_robot_packet();
+      spdlog::info("sending data {}", data.len);
       sent_robot_bytes += DS_Max(DS_SocketSend(&protocol.robot_socket, &data), 0);
       DS_StrRmBuf(&data);
       //spdlog::info("sending data {}", data.len);
@@ -162,11 +163,11 @@ static void send_data()
    }
 
    /* Send robot packet */
-   if (robot_send_timer.expired)
-   {
+   //if (robot_send_timer.expired)
+   //{
       send_robot_data();
       DS_TimerReset(&robot_send_timer);
-   }
+  // }
 }
 
 /**
@@ -205,7 +206,7 @@ static void recv_data()
    recv_fms_bytes += DS_StrLen(&fms_data);
    recv_radio_bytes += DS_StrLen(&radio_data);
    recv_robot_bytes += DS_StrLen(&robot_data);
-
+   spdlog::info("recv fms: {}, radio: {}, robot: {}", recv_fms_bytes, recv_radio_bytes, recv_robot_bytes);
    /* Read FMS packet */
    if (DS_StrLen(&fms_data) > 0)
    {

@@ -158,7 +158,8 @@ void CFG_ReconfigureAddresses(const int flags)
  */
 int CFG_GetTeamNumber(void)
 {
-   return DS_Max(team, 0);
+   //return DS_Max(team, 0);
+   return DS_Max(0,0);
 }
 
 /**

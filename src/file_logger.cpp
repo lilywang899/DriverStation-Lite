@@ -45,7 +45,7 @@ using namespace YAML;
 void rotating_logfiles(const std::string &logPath)
 {
  // Create a file rotating logger with 5 MB size max and 3 rotated files
- auto max_size = 3000 * 1;
+ auto max_size = 1024 * 1024;
  auto max_files = 3;
  auto logger = spdlog::rotating_logger_mt("test_logger", logPath, max_size, max_files);
  spdlog::set_default_logger(logger);

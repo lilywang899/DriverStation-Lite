@@ -37,7 +37,7 @@ cTagTimezone = 0x10
 
 
 host = '127.0.0.1'
-port = 1130
+port = 1180
 
 logger = logging.getLogger(__name__)
 
@@ -84,20 +84,20 @@ def create_packet(voltage):
     return packet[:8]
 
 def main():
-    logging.basicConfig(filename='/home/lily/DriverStation-Lite/log/ds_data.log',
+    logging.basicConfig(filename='/home/lily/DriverStation-Lite/log/ds_data1.log',
                         level=logging.INFO,
                         format='%(asctime)s - %(levelname)s [%(lineno)d] %(message)s',
                         datefmt='%d/%m/%Y %I:%M:%S%p')
     # create dgram udp socket
     try:
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.bind(('127.0.0.1', 1180))
+        s.bind(('', 1130))
         #logger.info('Waiting for data')
     except socket.error:
         print('Failed to create socket')
         sys.exit()
 
-    msg = "H" 
+    msg = "I" 
     
     #packet = create_packet(5)
 
