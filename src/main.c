@@ -123,9 +123,11 @@ static void *get_user_input(void*)
             running = 0;
             break;
          case 'e':
+            spdlog::info("robot enabled");
             DS_SetRobotEnabled(1);
             break;
          case 'd':
+            spdlog::info("robot disabled");
             DS_SetRobotEnabled(0);
             break;
          case 'o':

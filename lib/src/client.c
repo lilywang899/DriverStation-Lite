@@ -31,6 +31,11 @@
 #include <string.h>
 #include <assert.h>
 
+
+//#include "spdlog/spdlog.h"
+//#include "spdlog/cfg/env.h"
+//#include "spdlog/fmt/ostr.h"
+
 /*
  * Set the strings
  */
@@ -430,7 +435,9 @@ void DS_SetTeamNumber(const int team)
  */
 void DS_SetRobotEnabled(const int enabled)
 {
-   CFG_SetRobotEnabled(enabled);
+ 
+ //spdlog::info("Setting robot enabled to {}", enabled);
+  CFG_SetRobotEnabled(enabled);
 }
 
 /**
