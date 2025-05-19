@@ -131,9 +131,9 @@ static void send_robot_data()
    {
       ++sent_robot_packets;
       DS_String data = protocol.create_robot_packet();
+      spdlog::info("sending data {0:x}, {0:x}, {0:x}, {0:x}, {0:x}, {0:x}", data.buf[0], data.buf[1], data.buf[2], data.buf[3], data.buf[4], data.buf[5]);
       sent_robot_bytes += DS_Max(DS_SocketSend(&protocol.robot_socket, &data), 0);
       DS_StrRmBuf(&data);
-      //spdlog::info("sending data {}", data.len);
    }
 }
 

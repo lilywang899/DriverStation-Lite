@@ -37,7 +37,9 @@
 #if defined _WIN32
 #   include <windows.h>
 #endif
-
+#include "spdlog/spdlog.h"
+#include "spdlog/cfg/env.h"
+#include "spdlog/fmt/ostr.h"
 /*
  * Protocol bytes
  */
@@ -216,7 +218,7 @@ static uint8_t get_control_code(void)
    /* Append the robot enabled state */
    if (CFG_GetRobotEnabled())
       code |= cEnabled;
-
+   spdlog::info(" Getting robot codE {0:x}", code);
    return code;
 }
 

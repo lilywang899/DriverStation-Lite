@@ -84,7 +84,7 @@ def create_packet(voltage):
     return packet[:8]
 
 def main():
-    logging.basicConfig(filename='/home/lily/share/LiteDS_docs/robot_sim/ds_data.log',
+    logging.basicConfig(filename='/home/lily/DriverStation-Lite/log/ds_data.log',
                         level=logging.INFO,
                         format='%(asctime)s - %(levelname)s [%(lineno)d] %(message)s',
                         datefmt='%d/%m/%Y %I:%M:%S%p')
@@ -97,18 +97,19 @@ def main():
         print('Failed to create socket')
         sys.exit()
 
-    #msg = "H" lily
+    msg = "H"
     
-    packet = create_packet(5)
+    #packet = create_packet(5)
 
     try:
         start_new_thread(recv_data, (s,))
-        timer = Timer(2, send_data, args=(s, packet))
+        timer = Timer(2, send_data, args=(s, msg))
         timer.start()
         time.sleep(10)
         timer.cancel()
 
-    except (socket.error, msg):
+    #except (socket.error, msg):
+    except socket.error:
         print('Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
         sys.exit()
 
