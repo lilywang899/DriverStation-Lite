@@ -15,10 +15,6 @@
 #include <string.h>
 #include <assert.h>
 
-#include "spdlog/spdlog.h"
-#include "spdlog/cfg/env.h"
-#include "spdlog/fmt/ostr.h"
-
 /*
  * These variables hold the state(s) of the LibDS and its modules
  */
@@ -341,7 +337,6 @@ void CFG_SetRobotEnabled(const int enabled)
 {
    if (robot_enabled != to_boolean(enabled))
    {
-      spdlog::info("Setting robot enabled to {}", enabled);
       robot_enabled = to_boolean(enabled) && !CFG_GetEmergencyStopped();
       create_robot_event(DS_ROBOT_ENABLED_CHANGED);
       create_robot_event(DS_STATUS_STRING_CHANGED);

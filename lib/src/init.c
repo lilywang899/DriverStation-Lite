@@ -21,16 +21,13 @@ void DS_Init(void)
 {
    if (!DS_Initialized())
    {
-      spdlog::info("initializing modules of LibDS library");
-
       init = 1;
-
       Timers_Init(); //sets running to true and timers to a ds_array with data size of 10
       Client_Init(); //sets status string, the three different addresses to 0.0.0.0, sets ds_string game_data to 0s
       Events_Init(); //Initializes the event queue with an initial support for 50 events
       Sockets_Init(); //only for windows
       Joysticks_Init(); //another ds_array with data of 6 blocks of 0s
-      Protocols_Init(); //start socket
+      Protocols_Init();
    }
 }
 

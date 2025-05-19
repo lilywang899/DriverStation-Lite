@@ -131,7 +131,6 @@ static void send_robot_data()
    {
       ++sent_robot_packets;
       DS_String data = protocol.create_robot_packet();
-      spdlog::info("sending data {0:x}, {0:x}, {0:x}, {0:x}, {0:x}, {0:x}", data.buf[0], data.buf[1], data.buf[2], data.buf[3], data.buf[4], data.buf[5]);
       sent_robot_bytes += DS_Max(DS_SocketSend(&protocol.robot_socket, &data), 0);
       DS_StrRmBuf(&data);
    }
@@ -147,19 +146,20 @@ static void send_data()
    if (!enable_operations)
       return;
 
-   /* Send FMS packet */
-   if (fms_send_timer.expired)
-   {
-      send_fms_data();
-      DS_TimerReset(&fms_send_timer);
-   }
-
-   /* Send radio packet */
-   if (radio_send_timer.expired)
-   {
-      send_radio_data();
-      DS_TimerReset(&radio_send_timer);
-   }
+//
+//   /* Send FMS packet */
+//   if (fms_send_timer.expired)
+//   {
+//      send_fms_data();
+//      DS_TimerReset(&fms_send_timer);
+//   }
+//
+//   /* Send radio packet */
+//   if (radio_send_timer.expired)
+//   {
+//      send_radio_data();
+//      DS_TimerReset(&radio_send_timer);
+//   }
 
    /* Send robot packet */
    if (robot_send_timer.expired)
@@ -174,10 +174,10 @@ static void send_data()
  */
 static void clear_recv_data()
 {
-   DS_StrRmBuf(&fms_data);
-   DS_StrRmBuf(&radio_data);
+//   DS_StrRmBuf(&fms_data);
+//   DS_StrRmBuf(&radio_data);
    DS_StrRmBuf(&robot_data);
-   DS_StrRmBuf(&netcs_data);
+//   DS_StrRmBuf(&netcs_data);
 }
 
 /**
@@ -193,47 +193,47 @@ static void recv_data()
    /* Clear buffers (just to be sure) */
    clear_recv_data();
 
-   /* Read data from sockets */
-   fms_data = DS_SocketRead(&protocol.fms_socket);
-   radio_data = DS_SocketRead(&protocol.radio_socket);
+//   /* Read data from sockets */
+//   fms_data = DS_SocketRead(&protocol.fms_socket);
+//   radio_data = DS_SocketRead(&protocol.radio_socket);
    robot_data = DS_SocketRead(&protocol.robot_socket);
-   netcs_data = DS_SocketRead(&protocol.netconsole_socket);
+//   netcs_data = DS_SocketRead(&protocol.netconsole_socket);
 
    //spdlog::info("receiving robot data\n");
 
-   /* Update received data indicators */
-   recv_fms_bytes += DS_StrLen(&fms_data);
-   recv_radio_bytes += DS_StrLen(&radio_data);
+//   /* Update received data indicators */
+//   recv_fms_bytes += DS_StrLen(&fms_data);
+//   recv_radio_bytes += DS_StrLen(&radio_data);
    recv_robot_bytes += DS_StrLen(&robot_data);
 
-   /* Read FMS packet */
-   if (DS_StrLen(&fms_data) > 0)
-   {
-      ++received_fms_packets;
-      fms_read = protocol.read_fms_packet(&fms_data);
-      CFG_SetFMSCommunications(fms_read);
-   }
-
-   /* Read radio packet */
-   if (DS_StrLen(&radio_data) > 0)
-   {
-      ++received_radio_packets;
-      radio_read = protocol.read_radio_packet(&radio_data);
-      CFG_SetRadioCommunications(radio_read);
-   }
+//   /* Read FMS packet */
+//   if (DS_StrLen(&fms_data) > 0)
+//   {
+//      ++received_fms_packets;
+//      fms_read = protocol.read_fms_packet(&fms_data);
+//      CFG_SetFMSCommunications(fms_read);
+//   }
+//
+//   /* Read radio packet */
+//   if (DS_StrLen(&radio_data) > 0)
+//   {
+//      ++received_radio_packets;
+//      radio_read = protocol.read_radio_packet(&radio_data);
+//      CFG_SetRadioCommunications(radio_read);
+//   }
 
    /* Read robot packet */
    if (DS_StrLen(&robot_data) > 0)
    {
       ++received_robot_packets;
       robot_read = protocol.read_robot_packet(&robot_data);
-      spdlog::info("robot_read: {}", robot_read);
+      //spdlog::info("robot_read: {}", robot_read);
       CFG_SetRobotCommunications(robot_read);
    }
-
-   /* Add NetConsole message to event system */
-   if (netcs_data.len > 0)
-      CFG_AddNetConsoleMessage(&netcs_data);
+//
+//   /* Add NetConsole message to event system */
+//   if (netcs_data.len > 0)
+//      CFG_AddNetConsoleMessage(&netcs_data);
 
    /* Reset the data pointers */
    clear_recv_data();
@@ -244,37 +244,38 @@ static void recv_data()
  */
 static void update_watchdogs()
 {
-   /* Feed the watchdogs if packets are read */
-   if (fms_read)
-      DS_TimerReset(&fms_recv_timer);
-   if (radio_read)
-      DS_TimerReset(&radio_recv_timer);
+//   /* Feed the watchdogs if packets are read */
+//   if (fms_read)
+//      DS_TimerReset(&fms_recv_timer);
+//   if (radio_read)
+//      DS_TimerReset(&radio_recv_timer);
    if (robot_read)
       DS_TimerReset(&robot_recv_timer);
 
    /* Clear the read success values */
-   fms_read = 0;
-   radio_read = 0;
+//   fms_read = 0;
+//   radio_read = 0;
    robot_read = 0;
 
    /* Reset the FMS if the watchdog expires */
-   if (fms_recv_timer.expired)
-   {
-      CFG_FMSWatchdogExpired();
-      DS_TimerReset(&fms_recv_timer);
-   }
-
-   /* Reset the radio if the watchdog expires */
-   if (radio_recv_timer.expired)
-   {
-      CFG_RadioWatchdogExpired();
-      DS_TimerReset(&radio_recv_timer);
-   }
+//   if (fms_recv_timer.expired)
+//   {
+//      CFG_FMSWatchdogExpired();
+//      DS_TimerReset(&fms_recv_timer);
+//   }
+//
+//   /* Reset the radio if the watchdog expires */
+//   if (radio_recv_timer.expired)
+//   {
+//      CFG_RadioWatchdogExpired();
+//      DS_TimerReset(&radio_recv_timer);
+//   }
 
    /* Reset the robot if the watchdog expires */
    if (robot_recv_timer.expired)
    {
-      CFG_RobotWatchdogExpired();
+      // Disable to avoid creating thread.
+      //CFG_RobotWatchdogExpired();
       DS_TimerReset(&robot_recv_timer);
    }
 }
@@ -288,12 +289,11 @@ static void update_watchdogs()
  */
 static void *run_event_loop(void *)
 {
-   spdlog::info("running event loop");
    while (running)
    {
       send_data();
       recv_data();
-      //update_watchdogs();
+      update_watchdogs();
       DS_Sleep(5);
    }
 
@@ -317,13 +317,13 @@ DS_Protocol *DS_CurrentProtocol()
 void Protocols_Init()
 {
    /* Initialize sender timers */
-   DS_TimerInit(&fms_send_timer, 0, SEND_PRECISION);
-   DS_TimerInit(&radio_send_timer, 0, SEND_PRECISION);
+//   DS_TimerInit(&fms_send_timer, 0, SEND_PRECISION);
+//   DS_TimerInit(&radio_send_timer, 0, SEND_PRECISION);
    DS_TimerInit(&robot_send_timer, 0, SEND_PRECISION);
 
    /* Initialize watchdog timers */
-   DS_TimerInit(&fms_recv_timer, 0, RECV_PRECISION);
-   DS_TimerInit(&radio_recv_timer, 0, RECV_PRECISION);
+//   DS_TimerInit(&fms_recv_timer, 0, RECV_PRECISION);
+//   DS_TimerInit(&radio_recv_timer, 0, RECV_PRECISION);
    DS_TimerInit(&robot_recv_timer, 0, RECV_PRECISION);
 
    /* Allow the event loop to run */
@@ -360,32 +360,32 @@ static void close_protocol()
    enable_operations = 0;
 
    /* Stop sender timers */
-   DS_TimerStop(&fms_send_timer);
-   DS_TimerStop(&radio_send_timer);
+//   DS_TimerStop(&fms_send_timer);
+//   DS_TimerStop(&radio_send_timer);
    DS_TimerStop(&robot_send_timer);
 
    /* Stop receiver timers */
-   DS_TimerStop(&fms_recv_timer);
-   DS_TimerStop(&radio_recv_timer);
+//   DS_TimerStop(&fms_recv_timer);
+//   DS_TimerStop(&radio_recv_timer);
    DS_TimerStop(&robot_recv_timer);
 
    /* Close the sockets */
-   DS_SocketClose(&protocol.fms_socket);
-   DS_SocketClose(&protocol.radio_socket);
+//   DS_SocketClose(&protocol.fms_socket);
+//   DS_SocketClose(&protocol.radio_socket);
    DS_SocketClose(&protocol.robot_socket);
-   DS_SocketClose(&protocol.netconsole_socket);
+//   DS_SocketClose(&protocol.netconsole_socket);
 
    /* Reset sent/recv bytes */
-   sent_fms_bytes = 0;
-   recv_fms_bytes = 0;
-   sent_radio_bytes = 0;
-   recv_radio_bytes = 0;
+//   sent_fms_bytes = 0;
+//   recv_fms_bytes = 0;
+//   sent_radio_bytes = 0;
+//   recv_radio_bytes = 0;
    sent_robot_bytes = 0;
    recv_robot_bytes = 0;
 
    /* Reset sent/recv packets */
-   DS_ResetFMSPackets();
-   DS_ResetRadioPackets();
+//   DS_ResetFMSPackets();
+//   DS_ResetRadioPackets();
    DS_ResetRobotPackets();
 
    /* Create notification string */
@@ -428,24 +428,27 @@ void DS_ConfigureProtocol(const DS_Protocol *ptr)
    /* Update sockets */
    //DS_SocketOpen(&protocol.fms_socket);
    //DS_SocketOpen(&protocol.radio_socket);
-   DS_SocketOpen(&protocol.robot_socket);
+   //Disabled it to avoid duplicate socket thread,
+   //Create socket thread at DS_SetCustomRobotAddress("127.0.0.1");
+   //Need to update it later.
+   //DS_SocketOpen(&protocol.robot_socket);
    //DS_SocketOpen(&protocol.netconsole_socket);
 
    /* Update sender timers */
-   fms_send_timer.time = protocol.fms_interval;
-   radio_send_timer.time = protocol.radio_interval;
+//   fms_send_timer.time = protocol.fms_interval;
+//   radio_send_timer.time = protocol.radio_interval;
    robot_send_timer.time = protocol.robot_interval;
 
    /* Update watchdogs */
-   fms_recv_timer.time = DS_Min(protocol.fms_interval * 50, 1000);
-   radio_recv_timer.time = DS_Min(protocol.radio_interval * 50, 1000);
+//   fms_recv_timer.time = DS_Min(protocol.fms_interval * 50, 1000);
+//   radio_recv_timer.time = DS_Min(protocol.radio_interval * 50, 1000);
    robot_recv_timer.time = DS_Min(protocol.robot_interval * 50, 1000);
 
    /* Start the timers */
-   DS_TimerStart(&fms_send_timer);
-   DS_TimerStart(&fms_recv_timer);
-   DS_TimerStart(&radio_send_timer);
-   DS_TimerStart(&radio_recv_timer);
+//   DS_TimerStart(&fms_send_timer);
+//   DS_TimerStart(&fms_recv_timer);
+//   DS_TimerStart(&radio_send_timer);
+//   DS_TimerStart(&radio_recv_timer);
    DS_TimerStart(&robot_send_timer);
    DS_TimerStart(&robot_recv_timer);
 
@@ -604,8 +607,8 @@ int DS_ReceivedRobotPackets()
  */
 void DS_ResetFMSPackets()
 {
-   sent_fms_packets = 0;
-   received_fms_packets = 0;
+//   sent_fms_packets = 0;
+//   received_fms_packets = 0;
 }
 
 /**
@@ -614,8 +617,8 @@ void DS_ResetFMSPackets()
  */
 void DS_ResetRadioPackets()
 {
-   sent_radio_packets = 0;
-   received_radio_packets = 0;
+//   sent_radio_packets = 0;
+//   received_radio_packets = 0;
 }
 
 /**

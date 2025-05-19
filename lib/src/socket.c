@@ -52,13 +52,12 @@ static void read_socket(DS_Socket *ptr)
    {
       ptr->info.buffer_size = read;
       memset(ptr->info.buffer, 0, ptr->info.buffer_size);
-
-      int i;
-      for (i = 0; i < read; ++i)
-         ptr->info.buffer[i] = data[i];
-         spdlog::info("printing data received: {}",data);
+      for (int i = 0; i < read; ++i) {
+          ptr->info.buffer[i] = data[i];
+      }
    }
 }
+
 #if 0
 /**
  * Runs the server socket loop, which uses the \c select() function
@@ -102,57 +101,62 @@ static void server_loop(DS_Socket *ptr)
    }
 }
 #endif
+//Changed to epoll
+// Reference to: https://github.com/millken/c-example/blob/master/epoll-example.c
 static void server_loop(DS_Socket *ptr)
 {
-   /* Check arguments */
-   assert(ptr);
+    /* Check arguments */
+    assert(ptr);
 
-   /* Disable socket blocking */
-   set_socket_block(ptr->info.sock_in, 0);
+    /* Disable socket blocking */
+    set_socket_block(ptr->info.sock_in, 0);
 
-   /* Initialize variables for epoll */
-   struct epoll_event ev;
-   ev.events = EPOLLIN;
-   int epfd = epoll_create(255);
-   if (epfd < 0) {
-      spdlog::critical("epoll create error.");
-   }
-   ev.data.fd = epfd;
-   int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, ptr->info.sock_in, &ev);
-   if (ret < 0)
-   {
-      spdlog::critical("epoll_ctl error.");
-   }
+    /* Initialize variables for epoll */
+    struct epoll_event ev;
 
-   struct epoll_event events[256];
+    int epfd = epoll_create(255);
+    if (epfd < 0) {
+        spdlog::critical("epoll create error.");
+    }
+    ev.data.fd = ptr->info.sock_in;
+    ev.events = EPOLLIN;
+    int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, ptr->info.sock_in, &ev);
+    if (ret < 0)
+    {
+        spdlog::critical("epoll_ctl error.");
+    }
 
-   spdlog::info("create socket thread to receive incoming data.");
+    struct epoll_event events[256];
 
-   while (ptr->info.server_init && ptr->info.sock_in > 0)
-   {
-      int ready = epoll_wait(epfd, events, 256, 500);  //500 milliseconds
-      if (ready < 0)
-      {
-         perror("epoll_wait.");
-         return ;
-      }
-      else if (ready == 0)
-      {
-         /* timeout, no data coming */
-         continue;
-      }
-      else
-      {
-         for (int i = 0; i < ready; i++)
-         {
-            if (events[i].data.fd == ptr->info.sock_in)
+    while (ptr->info.server_init && ptr->info.sock_in > 0)
+    {
+        int ready = epoll_wait(epfd, events, 256, 500);  //500 milliseconds
+        if (ready < 0)
+        {
+            perror("epoll_wait.");
+            return ;
+        }
+        else if (ready == 0)
+        {
+            /* timeout, no data coming */
+            continue;
+        }
+        else
+        {
+            for (int i = 0; i < ready; i++)
             {
-               read_socket(ptr);
+                if (events[i].data.fd == ptr->info.sock_in)
+                {
+                    read_socket(ptr);
+                }
             }
-         }
-      }
-   }
+        }
+    }
 }
+
+
+
+
 /**
  * Initializes the given socket structure
  *
@@ -161,8 +165,6 @@ static void server_loop(DS_Socket *ptr)
 static void *create_socket(void *data)
 {
    /* Check arguments */
-   spdlog::info("create_socket  {}.{}.{}  !", SPDLOG_VER_MAJOR, SPDLOG_VER_MINOR,SPDLOG_VER_PATCH);
-
    assert(data);
    DS_Socket *ptr = (DS_Socket *)data;
 
@@ -414,7 +416,6 @@ void DS_SocketChangeAddress(DS_Socket *ptr, const char *address)
    /* Re-assign the address */
    memset(ptr->address, 0, sizeof(ptr->address));
    memcpy(ptr->address, address, strlen(address));
-   spdlog::info("socket address changed to: {}", ptr->address);
    /* Re-open the socket */
    DS_SocketClose(ptr);
    DS_SocketOpen(ptr);
