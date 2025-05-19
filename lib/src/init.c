@@ -30,7 +30,7 @@ void DS_Init(void)
       Events_Init(); //Initializes the event queue with an initial support for 50 events
       Sockets_Init(); //only for windows
       Joysticks_Init(); //another ds_array with data of 6 blocks of 0s
-      Protocols_Init();
+      Protocols_Init(); //start socket
    }
 }
 

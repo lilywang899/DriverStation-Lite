@@ -113,5 +113,9 @@ def main():
         print('Error Code : ' + str(msg[0]) + ' Message ' + msg[1])
         sys.exit()
 
+    while(1){
+        sleep(10)
+    }
+
 if __name__== '__main__':
     main()
