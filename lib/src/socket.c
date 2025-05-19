@@ -14,6 +14,8 @@
 #include "spdlog/spdlog.h"
 #include "spdlog/cfg/env.h"
 #include "spdlog/fmt/ostr.h"
+#include <fcntl.h>
+#include <sys/epoll.h>
 
 #define SPRINTF_S snprintf
 #ifdef _WIN32
@@ -57,7 +59,7 @@ static void read_socket(DS_Socket *ptr)
          spdlog::info("printing data received: {}",data);
    }
 }
-
+#if 0
 /**
  * Runs the server socket loop, which uses the \c select() function
  * to copy received data into the socket's buffer only when the
@@ -99,15 +101,63 @@ static void server_loop(DS_Socket *ptr)
          read_socket(ptr);
    }
 }
+#endif
+static void server_loop(DS_Socket *ptr)
+{
+   /* Check arguments */
+   assert(ptr);
 
+   /* Disable socket blocking */
+   set_socket_block(ptr->info.sock_in, 0);
+
+   /* Initialize variables for epoll */
+   struct epoll_event ev;
+   ev.events = EPOLLIN;
+   int epfd = epoll_create(255);
+   if (epfd < 0) {
+      spdlog::critical("epoll create error.");
+   }
+   ev.data.fd = epfd;
+   int ret = epoll_ctl(epfd, EPOLL_CTL_ADD, ptr->info.sock_in, &ev);
+   if (ret < 0)
+   {
+      spdlog::critical("epoll_ctl error.");
+   }
+
+   struct epoll_event events[256];
+
+   spdlog::info("create socket thread to receive incoming data.");
+
+   while (ptr->info.server_init && ptr->info.sock_in > 0)
+   {
+      int ready = epoll_wait(epfd, events, 256, 500);  //500 milliseconds
+      if (ready < 0)
+      {
+         perror("epoll_wait.");
+         return ;
+      }
+      else if (ready == 0)
+      {
+         /* timeout, no data coming */
+         continue;
+      }
+      else
+      {
+         for (int i = 0; i < ready; i++)
+         {
+            if (events[i].data.fd == ptr->info.sock_in)
+            {
+               read_socket(ptr);
+            }
+         }
+      }
+   }
+}
 /**
  * Initializes the given socket structure
  *
  * \param data raw pointer to a \c DS_Socket structure
  */
-
-
-
 static void *create_socket(void *data)
 {
    /* Check arguments */
