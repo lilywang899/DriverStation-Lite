@@ -97,9 +97,9 @@ int main() {
                 break;
             default:
                 break;
-            // case SDL_QUIT:
-            //     quit = 1;
-            //     break;
+            case SDL_EVENT_QUIT:
+                 quit = 1;
+                 break;
 #if 0
             case SDL_JOYAXISMOTION:
                 printf("The value of axis %d was changed to %d.\n", event.jaxis.axis, event.jaxis.value);
