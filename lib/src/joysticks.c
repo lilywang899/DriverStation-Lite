@@ -47,7 +47,7 @@ static void register_event()
  */
 static DS_Joystick *get_joystick(int joystick)
 {
-   if ((int)array.used > joystick)
+   if ((int)array.used >= joystick)
       return (DS_Joystick *)array.data[joystick];
 
    return NULL;
@@ -58,7 +58,7 @@ static DS_Joystick *get_joystick(int joystick)
  */
 static int joystick_exists(int joystick)
 {
-   if (DS_GetJoystickCount() > joystick)
+   if (DS_GetJoystickCount() >= joystick)
       return get_joystick(joystick) != NULL;
 
    return 0;
@@ -180,10 +180,15 @@ int DS_GetJoystickButton(int joystick, int button)
    if (CFG_GetRobotEnabled() && joystick_exists(joystick))
    {
       DS_Joystick *stick = get_joystick(joystick);
-
+       
+	if (stick->buttons[button]) {
+               printf("DS_GetJoystickButton %d, %d\n", button, stick->buttons[button]);
+           }
       if (stick->num_buttons > button)
+	{
          return stick->buttons[button];
-   }
+   }}
+//    printf("DS_GetJoystickButton %d\n", button);
 
    return 0;
 }
@@ -270,8 +275,13 @@ void DS_SetJoystickButton(int joystick, int button, int pressed)
    {
       DS_Joystick *stick = get_joystick(joystick);
 
-      if (stick->num_buttons > button)
+      if (stick->num_buttons > button){
          stick->buttons[button] = (pressed > 0) ? 1 : 0;
+
+           if (stick->buttons[button]) {
+               printf("button %d pressed %d\n", button, pressed);
+           }
+}
    }
 }
 
