@@ -365,100 +365,110 @@ static DS_String get_timezone_data(void)
 /**
  * Constructs a joystick information structure for every attached joystick.
  */
-static DS_String get_joystick_data(void)
-{
+static DS_String get_joystick_data(void) {
    /* Initialize the variables */
    int i = 0;
    int j = 0;
-   DS_String data = DS_StrNewLen(0);
+   int index = 0;
+   DS_String data = DS_StrNewLen(32);
 
-   /* Generate data for each joystick */
-   for (i = 0; i < DS_GetJoystickCount(); ++i)
-   {
-      //DS_StrAppend(&data, get_joystick_size(i));
-      //DS_StrAppend(&data, cTagJoystick);
+   //   /* Generate data for each joystick */
+   //   for (i = 0; i < DS_GetJoystickCount(); ++i)
+   //   {
+   //      //DS_StrAppend(&data, get_joystick_size(i));
+   //      //DS_StrAppend(&data, cTagJoystick);
+   //
+   //      /* Add axis data */
+   //      //DS_StrAppend(&data, DS_GetJoystickNumAxes(i));
+   //      //for (j = 0; j < DS_GetJoystickNumAxes(i); ++j)
+   //         //DS_StrAppend(&data, DS_FloatToByte(DS_GetJoystickAxis(i, j), 1));
+   //
+   //      /* Generate button data */
+   //      uint16_t button_flags = 0;
+   //      for (j = 0; j < DS_GetJoystickNumButtons(i); ++j)
+   //         button_flags += DS_GetJoystickButton(i, j) ? (int)pow(2, j) : 0;
+   // if (button_flags !=0){
+   // 	printf("button flag %d\n",button_flags);
+   // }
+   //      /* Add button data */
+   //      /* potential TODO: this assumes num_buttons <= 16 */
+   //      //DS_StrAppend(&data, DS_GetJoystickNumButtons(i));
+   //      DS_StrAppend(&data, (uint8_t)(button_flags >> 8));
+   //      DS_StrAppend(&data, (uint8_t)(button_flags));
+   //
+   //      /* Add hat data */
+   //      //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
+   //      //for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
+   //      //{
+   //      //   DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j) >> 8));
+   //      //   DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j)));
+   //      //}
+   //      uint16_t hat_flags = 0;
+   //      //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
+   //      for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
+   //      {
+   //         hat_flags += DS_GetJoystickHat(i, j) ? (int)pow(2, j) : 0;
+   //      }
+   //      printf("hat_flags {}", hat_flags);
+   //      DS_StrAppend(&data, (uint8_t)(hat_flags >> 8));
+   //      DS_StrAppend(&data, (uint8_t)(hat_flags));
+   //   }/**
 
-      /* Add axis data */
-      //DS_StrAppend(&data, DS_GetJoystickNumAxes(i));
-      //for (j = 0; j < DS_GetJoystickNumAxes(i); ++j)
-         //DS_StrAppend(&data, DS_FloatToByte(DS_GetJoystickAxis(i, j), 1));
-
-      /* Generate button data */
-      uint16_t button_flags = 0;
-      for (j = 0; j < DS_GetJoystickNumButtons(i); ++j)
-         button_flags += DS_GetJoystickButton(i, j) ? (int)pow(2, j) : 0;
-	if (button_flags !=0){
-		printf("button flag %d\n",button_flags);
-	}
-      /* Add button data */
-      /* potential TODO: this assumes num_buttons <= 16 */
-      //DS_StrAppend(&data, DS_GetJoystickNumButtons(i));
-      DS_StrAppend(&data, (uint8_t)(button_flags >> 8));
-      DS_StrAppend(&data, (uint8_t)(button_flags));
-
-      /* Add hat data */
-      //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
-      //for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
-      //{
-      //   DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j) >> 8));
-      //   DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j)));
-      //}
-      uint16_t hat_flags = 0;
-      //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
-      for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
-      {
-         hat_flags += DS_GetJoystickHat(i, j) ? (int)pow(2, j) : 0;
-      }
-      printf("hat_flags {}", hat_flags);
-      DS_StrAppend(&data, (uint8_t)(hat_flags >> 8));
-      DS_StrAppend(&data, (uint8_t)(hat_flags));
+   /* Encode date/time in datagram */
+   DS_StrSetChar(&data, index++, 1);
+   DS_StrSetChar(&data, index++, cTagJoystick);
+   /* Add axis data */
+   DS_StrSetChar(&data, index++, DS_GetJoystickNumAxes(i));
+   for (j = 0; j < DS_GetJoystickNumAxes(i); ++j) {
+      DS_StrSetChar(&data, index, 127);
+      index++;
    }
-
+   uint16_t button_flags = 0;
+   for (j = 0; j < DS_GetJoystickNumButtons(i); ++j)
+      button_flags += DS_GetJoystickButton(i, j) ? (int) pow(2, j) : 0;
+   DS_StrSetChar(&data, index++, (uint8_t) (button_flags >> 8));
+   DS_StrSetChar(&data, index++, (uint8_t) (button_flags));
+   /* Add hat data */
+   //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
+   for (j = 0; j < DS_GetJoystickNumHats(i); ++j) {
+      DS_StrSetChar(&data, index++, (uint8_t) (DS_GetJoystickHat(i, j) >> 8));
+      DS_StrSetChar(&data, index++, (uint8_t) (DS_GetJoystickHat(i, j)));
+   }
    /* Return obtained data */
    return data;
 }
-
 /**
  * Obtains the CPU, RAM, Disk and CAN information from the robot packet
  */
-static void read_extended(const DS_String *data, const int offset)
-{
+static void read_extended(const DS_String *data, const int offset) {
    /* Check if data pointer is valid */
    if (!data)
       return;
 
    /* Get header tag */
-   uint8_t tag = (uint8_t)DS_StrCharAt(data, offset + 1);
+   uint8_t tag = (uint8_t) DS_StrCharAt(data, offset + 1);
 
-   if (tag == cRTagCANInfo)
-   {
+   if (tag == cRTagCANInfo) {
       /* Get CAN information */
       CFG_SetCANUtilization(extract_float(data, offset + 2));
-   }
-   else if (tag == cRTagCPUInfo)
-   {
+   } else if (tag == cRTagCPUInfo) {
       /* Get CPU usage */
       double cpu_percent = 0;
       int i;
-      for (i = 0; i < 2; i++)
-      {
+      for (i = 0; i < 2; i++) {
          float t_crit = extract_float(data, offset + 6 + (i * 4));
          float t_above = extract_float(data, offset + 10 + (i * 4));
          float t_norm = extract_float(data, offset + 14 + (i * 4));
          float t_low = extract_float(data, offset + 18 + (i * 4));
          cpu_percent
-             += (t_crit + (t_above * 0.90) + (t_norm * 0.75) + (t_low * 0.25)) / (t_crit + t_above + t_norm + t_low);
+               += (t_crit + (t_above * 0.90) + (t_norm * 0.75) + (t_low * 0.25)) / (t_crit + t_above + t_norm + t_low);
       }
       cpu_percent /= 2;
       CFG_SetRobotCPUUsage(cpu_percent);
-   }
-   else if (tag == cRTagRAMInfo)
-   {
+   } else if (tag == cRTagRAMInfo) {
       /* Get RAM usage */
-      CFG_SetRobotRAMUsage((max_ram_bytes - (uint32_t)extract_float(data, offset + 6)) / max_ram_bytes * 100);
-   }
-   else if (tag == cRTagDiskInfo)
-   {
+      CFG_SetRobotRAMUsage((max_ram_bytes - (uint32_t) extract_float(data, offset + 6)) / max_ram_bytes * 100);
+   } else if (tag == cRTagDiskInfo) {
       /* Get disk usage */
       CFG_SetRobotDiskUsage((max_disk_bytes - extract_float(data, offset + 2)) / max_disk_bytes * 100);
    }
