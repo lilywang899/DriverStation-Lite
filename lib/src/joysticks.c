@@ -135,12 +135,20 @@ int DS_GetJoystickNumButtons(int joystick)
  */
 int DS_GetJoystickHat(int joystick, int hat)
 {
-   if (CFG_GetRobotEnabled() && joystick_exists(joystick))
+   if (CFG_GetRobotEnabled() && joystick_exists(0))
    {
-      DS_Joystick *stick = get_joystick(joystick);
-
-      if (stick->num_hats > hat)
-         return stick->hats[hat];
+      DS_Joystick *stick = get_joystick(0);
+//if (stick->hats[hat]) 
+//               printf("DS_GetJoystickHat %d, %d\n", hat, stick->hats[hat]);
+           	   
+   // printf("DS_GetJoystickHat  %d, %d\n", hat, stick->hats[hat]);
+      if (stick->num_hats > hat) {
+          int num = stick->hats[hat];
+          stick->hats[hat] = 0;
+	  if (num)
+          	printf("DS_GetJoystickHat: num = %d, hat = %d\n", num, stick->hats[hat]);
+          return num;
+      }
    }
 
    return 0;
@@ -160,8 +168,9 @@ float DS_GetJoystickAxis(int joystick, int axis)
    {
       DS_Joystick *stick = get_joystick(joystick);
 
-      if (stick->num_axes > axis)
-         return stick->axes[axis];
+      if (stick->num_axes > axis) {
+          return stick->axes[axis];
+      }
    }
 
    return 0;
@@ -177,9 +186,9 @@ float DS_GetJoystickAxis(int joystick, int axis)
  */
 int DS_GetJoystickButton(int joystick, int button)
 {
-   if (CFG_GetRobotEnabled() && joystick_exists(joystick))
+   if (CFG_GetRobotEnabled() && joystick_exists(0))
    {
-      DS_Joystick *stick = get_joystick(joystick);
+      DS_Joystick *stick = get_joystick(0);
        
 	if (stick->buttons[button]) {
                printf("DS_GetJoystickButton %d, %d\n", button, stick->buttons[button]);
@@ -243,9 +252,9 @@ void DS_JoysticksAdd(const int axes, const int hats, const int buttons)
  */
 void DS_SetJoystickHat(int joystick, int hat, int angle)
 {
-   if (joystick_exists(joystick))
+   if (joystick_exists(0))
    {
-      DS_Joystick *stick = get_joystick(joystick);
+      DS_Joystick *stick = get_joystick(0);
 
       if (stick->num_hats > hat)
          stick->hats[hat] = angle;
@@ -271,9 +280,9 @@ void DS_SetJoystickAxis(int joystick, int axis, float value)
  */
 void DS_SetJoystickButton(int joystick, int button, int pressed)
 {
-   if (joystick_exists(joystick))
+   if (joystick_exists(0))
    {
-      DS_Joystick *stick = get_joystick(joystick);
+      DS_Joystick *stick = get_joystick(0);
 
       if (stick->num_buttons > button){
          stick->buttons[button] = (pressed > 0) ? 1 : 0;
@@ -345,31 +354,40 @@ static void process_hat_event(SDL_Event *event)
     switch (event->jhat.value)
     {
         case SDL_HAT_RIGHTUP:
+	    printf("rightup hat");
             angle = 45;
             break;
         case SDL_HAT_RIGHTDOWN:
+	    printf("rightdown hat");
             angle = 135;
             break;
         case SDL_HAT_LEFTDOWN:
+	    printf("leftdown hat");
             angle = 225;
             break;
         case SDL_HAT_LEFTUP:
+	    printf("leftup  hat");
             angle = 315;
             break;
         case SDL_HAT_UP:
-            angle = 0;
+	    printf("hat up");
+            angle = 5;
             break;
         case SDL_HAT_RIGHT:
+	    printf("right hat");
             angle = 90;
             break;
         case SDL_HAT_DOWN:
+	    printf("down hat");
             angle = 180;
             break;
         case SDL_HAT_LEFT:
+	    printf("left  hat");
             angle = 270;
             break;
         default:
-            angle = -1;
+	    //printf("default hat");
+            //angle = -1;
             break;
     }
     if (joystick > INVALID_ID)
@@ -463,6 +481,7 @@ void update_joysticks(void)
                 process_axis_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_HAT_MOTION:
+                printf("hat pressed\n");
                 process_hat_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_DOWN:

@@ -398,11 +398,20 @@ static DS_String get_joystick_data(void)
 
       /* Add hat data */
       //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
+      //for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
+      //{
+      //   DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j) >> 8));
+      //   DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j)));
+      //}
+      uint16_t hat_flags = 0;
+      //DS_StrAppend(&data, DS_GetJoystickNumHats(i));
       for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
       {
-        // DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j) >> 8));
-         //DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j)));
+         hat_flags += DS_GetJoystickHat(i, j) ? (int)pow(2, j) : 0;
       }
+      printf("hat_flags {}", hat_flags);
+      DS_StrAppend(&data, (uint8_t)(hat_flags >> 8));
+      DS_StrAppend(&data, (uint8_t)(hat_flags));
    }
 
    /* Return obtained data */
