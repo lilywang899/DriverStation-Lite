@@ -361,7 +361,7 @@ static DS_String get_timezone_data(void)
    /* Return the obtained data */
    return data;
 }
-
+#if 0
 /**
  * Constructs a joystick information structure for every attached joystick.
  */
@@ -434,6 +434,49 @@ static DS_String get_joystick_data(void) {
       DS_StrSetChar(&data, index++, (uint8_t) (DS_GetJoystickHat(i, j) >> 8));
       DS_StrSetChar(&data, index++, (uint8_t) (DS_GetJoystickHat(i, j)));
    }
+   /* Return obtained data */
+   return data;
+}
+#endif 
+
+static DS_String get_joystick_data(void)
+{
+   /* Initialize the variables */
+   int i = 0;
+   int j = 0;
+   DS_String data = DS_StrNewLen(0);
+
+   /* Generate data for each joystick */
+   for (i = 0; i < DS_GetJoystickCount(); ++i)
+   {
+      DS_StrAppend(&data, get_joystick_size(i));
+      DS_StrAppend(&data, cTagJoystick);
+
+      /* Add axis data */
+      DS_StrAppend(&data, DS_GetJoystickNumAxes(i));
+      for (j = 0; j < DS_GetJoystickNumAxes(i); ++j)
+         DS_StrAppend(&data, DS_FloatToByte(DS_GetJoystickAxis(i, j), 1));
+
+      /* Generate button data */
+      uint16_t button_flags = 0;
+      for (j = 0; j < DS_GetJoystickNumButtons(i); ++j)
+         button_flags += DS_GetJoystickButton(i, j) ? (int)pow(2, j) : 0;
+
+      /* Add button data */
+      /* potential TODO: this assumes num_buttons <= 16 */
+      DS_StrAppend(&data, DS_GetJoystickNumButtons(i));
+      DS_StrAppend(&data, (uint8_t)(button_flags >> 8));
+      DS_StrAppend(&data, (uint8_t)(button_flags));
+
+      /* Add hat data */
+      DS_StrAppend(&data, DS_GetJoystickNumHats(i));
+      for (j = 0; j < DS_GetJoystickNumHats(i); ++j)
+      {
+         DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j) >> 8));
+         DS_StrAppend(&data, (uint8_t)(DS_GetJoystickHat(i, j)));
+      }
+   }
+
    /* Return obtained data */
    return data;
 }
@@ -581,7 +624,7 @@ static DS_String create_robot_packet(void)
    }
 
    /* Add joystick data */
-   else if (sent_robot_packets > 5)
+   if (sent_robot_packets > 5)
    {
       DS_String js = get_joystick_data();
       DS_StrJoin(&data, &js);

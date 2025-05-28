@@ -131,7 +131,9 @@ static void send_robot_data()
    {
       ++sent_robot_packets;
       DS_String data = protocol.create_robot_packet();
-      sent_robot_bytes += DS_Max(DS_SocketSend(&protocol.robot_socket, &data), 0);
+      int value = DS_SocketSend(&protocol.robot_socket, &data);
+      //printf("pactet size [%d],snd_robot_data [%d]\n", DS_StrLen(&data), value);
+      sent_robot_bytes += DS_Max(value, 0);
       DS_StrRmBuf(&data);
    }
 }
