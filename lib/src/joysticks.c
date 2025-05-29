@@ -143,11 +143,7 @@ int DS_GetJoystickHat(int joystick, int hat)
            	   
    // printf("DS_GetJoystickHat  %d, %d\n", hat, stick->hats[hat]);
       if (stick->num_hats > hat) {
-          int num = stick->hats[hat];
-          stick->hats[hat] = 0;
-	  if (num)
-          	printf("DS_GetJoystickHat: num = %d, hat = %d\n", num, stick->hats[hat]);
-          return num;
+          return stick->hats[hat];
       }
    }
 
@@ -344,7 +340,7 @@ static void register_joysticks(void)
  * Extracts the hat/POV information from the given \a event
  * and updates the state of the Driver Station joysticks
  */
-static void process_hat_event(SDL_Event *event)
+static void process_hat_event(SDL_Event *event) //never reset to zero, either a value or default value
 {
     if (!event)
         return;
@@ -371,7 +367,7 @@ static void process_hat_event(SDL_Event *event)
             break;
         case SDL_HAT_UP:
 	    printf("hat up");
-            angle = 5;
+            angle = 0;
             break;
         case SDL_HAT_RIGHT:
 	    printf("right hat");
@@ -386,8 +382,8 @@ static void process_hat_event(SDL_Event *event)
             angle = 270;
             break;
         default:
-	    //printf("default hat");
-            //angle = -1;
+	    printf("default hat"); //case when hat is not pressed, "centered", restoring to center counts as an event
+            angle = -1;
             break;
     }
     if (joystick > INVALID_ID)

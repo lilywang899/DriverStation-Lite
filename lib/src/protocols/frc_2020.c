@@ -456,7 +456,6 @@ static DS_String get_joystick_data(void)
       DS_StrAppend(&data, DS_GetJoystickNumAxes(i));
       for (j = 0; j < DS_GetJoystickNumAxes(i); ++j)
          DS_StrAppend(&data, DS_FloatToByte(DS_GetJoystickAxis(i, j), 1));
-
       /* Generate button data */
       uint16_t button_flags = 0;
       for (j = 0; j < DS_GetJoystickNumButtons(i); ++j)
