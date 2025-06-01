@@ -26,6 +26,7 @@ extern void set_robot_code(const int code);
 extern void set_robot_comms(const int comms);
 extern void set_voltage(const double voltage);
 extern void set_has_joysticks(const int joysticks);
+extern void set_console_msg(const char *msg);
 
 #ifdef __cplusplus
 }

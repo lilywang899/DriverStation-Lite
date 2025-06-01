@@ -9,6 +9,8 @@
 #include "DS_Config.h"
 #include "DS_Events.h"
 #include "DS_Joysticks.h"
+#include "../../src/interface.c"
+#include <curses.h>
 #include "SDL3/SDL.h"
 #include <stdio.h>
 
@@ -138,10 +140,6 @@ int DS_GetJoystickHat(int joystick, int hat)
    if (CFG_GetRobotEnabled() && joystick_exists(0))
    {
       DS_Joystick *stick = get_joystick(0);
-//if (stick->hats[hat]) 
-//               printf("DS_GetJoystickHat %d, %d\n", hat, stick->hats[hat]);
-           	   
-   // printf("DS_GetJoystickHat  %d, %d\n", hat, stick->hats[hat]);
       if (stick->num_hats > hat) {
           return stick->hats[hat];
       }
@@ -187,13 +185,12 @@ int DS_GetJoystickButton(int joystick, int button)
       DS_Joystick *stick = get_joystick(0);
        
 	if (stick->buttons[button]) {
-               printf("DS_GetJoystickButton %d, %d\n", button, stick->buttons[button]);
+               wprintw(console_win,"DS_GetJoystickButton %d, %d\n", button, stick->buttons[button]);
            }
       if (stick->num_buttons > button)
 	{
          return stick->buttons[button];
    }}
-//    printf("DS_GetJoystickButton %d\n", button);
 
    return 0;
 }
@@ -284,7 +281,7 @@ void DS_SetJoystickButton(int joystick, int button, int pressed)
          stick->buttons[button] = (pressed > 0) ? 1 : 0;
 
            if (stick->buttons[button]) {
-               printf("button %d pressed %d\n", button, pressed);
+               wprintw(console_win,"button %d pressed %d\n", button, pressed);
            }
 }
    }
@@ -460,8 +457,6 @@ void update_joysticks(void)
     SDL_Event event;
     while (SDL_PollEvent(&event))
     {
-        //DS_StrNew("[INFO] event type! ");
-        //printf("event type! : %d\n",event.type);
         switch (event.type)
         {
             case SDL_EVENT_JOYSTICK_ADDED:
@@ -481,11 +476,11 @@ void update_joysticks(void)
                 process_hat_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
-                printf("button pressed\n");
+                wprintw(console_win,"button pressed\n");
                 process_button_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_UP:
-                printf("button released\n");
+                wprintw(console_win,"button released\n");
                 process_button_event(&event);
                 break;
             default:

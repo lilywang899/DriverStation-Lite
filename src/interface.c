@@ -5,7 +5,7 @@
  * the MIT license file in the root directory of this project.
  */
 
-#include "interface.h"
+#include "../include/interface.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -325,3 +325,13 @@ void set_has_joysticks(const int joysticks)
 {
    set_checked(&stick_check_str, joysticks);
 }
+
+/**
+ * Updates the text of the console message box
+ */
+void set_console_msg(const char *msg)
+{
+   DS_StrJoinCStr(&console_str, "\n");
+   DS_StrJoinCStr(&console_str, msg);
+}
+
