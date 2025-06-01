@@ -281,7 +281,8 @@ void DS_SetJoystickButton(int joystick, int button, int pressed)
          stick->buttons[button] = (pressed > 0) ? 1 : 0;
 
            if (stick->buttons[button]) {
-               wprintw(console_win,"button %d pressed %d\n", button, pressed);
+               set_console_msg("button pressed");
+               //wprintw(console_win,"button %d pressed %d\n", button, pressed);
            }
 }
    }
@@ -460,7 +461,8 @@ void update_joysticks(void)
         switch (event.type)
         {
             case SDL_EVENT_JOYSTICK_ADDED:
-                printf("joystick added! : %d\n",event.type);
+                set_console_msg("Added joystick");
+                //printf("joystick added! : %d\n",event.type);
                 joystick_tracker++;
                 register_joysticks();
                 break;
@@ -468,19 +470,23 @@ void update_joysticks(void)
                 register_joysticks();
                 break;
             case SDL_EVENT_JOYSTICK_AXIS_MOTION:
-                printf("axis motion detected\n");
+                set_console_msg("axis motion detected");
+                //printf("axis motion detected\n");
                 process_axis_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_HAT_MOTION:
-                printf("hat pressed\n");
+                set_console_msg("hat pressed");
+                //printf("hat pressed\n");
                 process_hat_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_DOWN:
-                wprintw(console_win,"button pressed\n");
+                set_console_msg("button pressed");
+                //wprintw(console_win,"button pressed\n");
                 process_button_event(&event);
                 break;
             case SDL_EVENT_JOYSTICK_BUTTON_UP:
-                wprintw(console_win,"button released\n");
+                //wprintw(console_win,"button released\n");
+                set_console_msg("button released");
                 process_button_event(&event);
                 break;
             default:

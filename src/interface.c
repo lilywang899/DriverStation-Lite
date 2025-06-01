@@ -5,7 +5,7 @@
  * the MIT license file in the root directory of this project.
  */
 
-#include "../include/interface.h"
+#include "interface.h"
 
 #include <stdio.h>
 #include <stdlib.h>
