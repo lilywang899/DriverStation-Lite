@@ -1,18 +1,15 @@
-# LibDS
+# Driver Station
 
-[![Build Status](https://travis-ci.org/FRC-Utilities/LibDS.svg?branch=master)](https://travis-ci.org/FRC-Utilities/LibDS)
-
-The DriverStation library allows you to connect and manage a robot easily by providing an abstraction layer between an application and the network comununications between the robot and the host computer.
+The Driver Station allows you to connect and manage a robot easily by providing an abstraction layer between an application and the network comununications between the robot and the host computer. Using FRC 2020 communication protocol, the program is currently used to control a 6-DOF robotic arm with a Logitech F310 gamepad. 
 
 The library is written in C, allowing it to be used in many platforms and/or programming languages (using wrappers).
 
 ## Credit
 This code was originally inspired by [FRC-Utilities/LibDS](https://github.com/FRC-Utilities/LibDS/tree/master) created by [Alex Spataru]. 
 
-### Features
+## Features
 
-LibDS implements the following features:
-
+### Driver Station implements the following features:
 - Modular design
 - Dynamic protocol loading
 - Integrated event system
@@ -21,18 +18,18 @@ LibDS implements the following features:
 - Abstract-protocol object
 - Cross-platform socket handling 
 
-Significant modifications and improvements include:
-
+### Significant modifications and improvements include:
+- Connecting driver station with a robot agent to reduce load of robot and replace RoboRIO with Raspberry Pi
 - Migrated legacy SDL modules and developed a joystick testing tool to troubleshoot connectivity and proper functionality 
 - Implemented dynamic configuration for driver station and robot simulator using YAML and XML files
 - Developed a robot simulator using python to test driver station functionalities for multiple protocols 
 - Implemented multi-threaded async socket communication between driver station and robot simulator 
 - Used data driven robot behavior testing by storing test data in JSON file and integrating comprehensive log module
 
-Work in progress:
-
-- Adding FRC 2025 protocol to driver station to ensure compatibility with this year's FRC robot
-- Connecting driver station with a [robot agent](https://github.com/lilywang899/Robot-Agent) to reduce load of robot and replace RoboRIO with Raspberry Pi 
+### Work in progress:
+- Integrate robotic gripper controls into Driver Station
+- Improve GUI display of robot status
+- Utilize more buttons on gamepad for features like homing arm to certain positions, or capturing picture
   
 ### Project Architecture
 
@@ -44,15 +41,15 @@ Work in progress:
 
 #### Protocols
 
-Protocols are encapsulated structures. When a protocol is initialized, it defines its properties and its respective data functions. The different functions of the LibDS will then operate with the data and properties defined by the current protocol.
+Protocols are encapsulated structures. When a protocol is initialized, it defines its properties and its respective data functions. The different functions of Driver Station will then operate with the data and properties defined by the current protocol.
 
-As with the original LibDS, protocols have access to the `DS_Config` to update the state of the LibDS.
+As with the original Driver Station, protocols have access to the `DS_Config` to update the state of Driver Station.
 
 The base protocol is implemented in the [`DS_Protocol`](https://github.com/FRC-Utilities/LibDS-C/blob/master/include/DS_Protocol.h#L33) structure.
 
 ##### Sockets
 
-Instead of manually initializing a socket for each target, data direction and protocol type (UDP and TCP). The LibDS will use the [`DS_Socket`](https://github.com/FRC-Utilities/LibDS-C/blob/master/include/DS_Socket.h#L56) object to define ports, protocol type and remote targets. 
+Instead of manually initializing a socket for each target, data direction and protocol type (UDP and TCP). Driver Station will use the [`DS_Socket`](https://github.com/FRC-Utilities/LibDS-C/blob/master/include/DS_Socket.h#L56) object to define ports, protocol type and remote targets. 
 
 All the logic code is in [`socket.c`](https://github.com/FRC-Utilities/LibDS-C/blob/master/src/socket.c), which will be in charge of managing the system sockets with the information given by a [`DS_Socket`](https://github.com/FRC-Utilities/LibDS-C/blob/master/include/DS_Socket.h#L56) object.
 
@@ -68,23 +65,24 @@ If your project runs into runtime errors try running `make staticlib` instead of
 To install compiled library files, and headers to the correct locations in /usr/local, use this command
 * sudo make install
 
-# ConsoleDS
+<!-- # ConsoleDS -->
 
-A simple DS implementatation for command line interfaces with ncurses/pdcurses. Joystick support implemented with SDL.
+<!-- A simple DS implementatation for command line interfaces with ncurses/pdcurses. Joystick support implemented with SDL. -->
 
-### Dependencies
+<!-- ### Dependencies -->
 
-If you are using Linux, you will need to install the following packages:
+<!-- If you are using Linux, you will need to install the following packages: -->
 
-- `sudo apt-get install libsdl1.2-dev`
-- `sudo apt-get install ncurses-dev`
+<!-- - `sudo apt-get install libsdl1.2-dev` -->
+<!-- - `sudo apt-get install ncurses-dev` -->
 
-If you are using Mac OSX, use [HomeBrew](http://brew.sh) to install ncurses:
+<!-- If you are using Mac OSX, use [HomeBrew](http://brew.sh) to install ncurses: -->
 
-- `brew install ncurses`
+<!-- - `brew install ncurses` -->
 
-I have already included the static SDL library for OSX users.
-This project already provides the libraries for Microsoft Windows.
+<!-- I have already included the static SDL library for OSX users. -->
+<!-- This project already provides the libraries for Microsoft Windows. -->
+
 
 ### License
 
